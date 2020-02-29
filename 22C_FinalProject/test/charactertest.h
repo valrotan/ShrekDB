@@ -41,6 +41,19 @@ void characterTests() {
 		cout << "ERROR IN COMPARATOR BY HEIGHT\n";
 	}
 
+	CharacterPointerComparator pcmpByName(CHARACTER_NAME);
+	CharacterPointerComparator pcmpByMass(CHARACTER_MASS);
+	CharacterPointerComparator pcmpByHeight(CHARACTER_HEIGHT);
+	if (pcmpByName.compare(&a, &b) >= 0) {
+		cout << "ERROR IN COMPARATOR BY NAME\n";
+	}
+	if (pcmpByMass.compare(&a, &b) <= 0) {
+		cout << "ERROR IN COMPARATOR BY MASS\n";
+	}
+	if (pcmpByHeight.compare(&a, &b) != 0) {
+		cout << "ERROR IN COMPARATOR BY HEIGHT\n";
+	}
+
 }
 
 #endif

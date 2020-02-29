@@ -10,6 +10,7 @@ enum CHARACTER_STYLE { CHARACTER_STYLE_TABLE = 0, CHARACTER_STYLE_ENTRY };
 
 class Character {
 	friend class CharacterComparator;
+	friend class CharacterPointerComparator;
 
 protected:
 	int id;
@@ -81,6 +82,19 @@ private:
 	CHARACTER_PROPERTY charProp;
 
 public:
+	CharacterComparator() : charProp(CHARACTER_ID) {}
 	CharacterComparator(CHARACTER_PROPERTY cp) : charProp(cp) {}
 	int compare(const Character &a, const Character &b) override;
+};
+
+class CharacterPointerComparator : Comparator<Character *> {
+private:
+	CHARACTER_PROPERTY charProp;
+	CharacterComparator *comparator; // actual comparator used underneath
+
+public:
+	CharacterPointerComparator(CHARACTER_PROPERTY cp) : charProp(cp) {
+		comparator = new CharacterComparator(charProp);
+	}
+	int compare(Character *const &a, Character *const &b) override;
 };

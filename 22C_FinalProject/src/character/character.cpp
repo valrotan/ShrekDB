@@ -117,3 +117,8 @@ int CharacterComparator::compare(const Character &a, const Character &b) {
 		return a.age - b.age;
 	}
 }
+
+int CharacterPointerComparator::compare(Character *const &a,
+																				Character *const &b) {
+	return comparator->compare(*a, *b);
+}
