@@ -1,23 +1,24 @@
 #ifndef CHARACTERTEST_H
 #define CHARACTERTEST_H
 
-#include <iostream>
-#include <fstream>
 #include "../src/character/character.h"
+#include <fstream>
+#include <iostream>
 
 using namespace std;
 
 void characterTests() {
 
-	cout << "character tests\n";
+	cout << "## character tests\n";
 
 	fstream dataFile("data.tsv");
-	dataFile.ignore(1024, '\n');
+	dataFile.ignore(1024, '\n'); // header first
 	Character c;
-	dataFile >> c;
-	cout << c << endl;
-	dataFile >> c;
-	cout << c << endl;
+	cout << Character::getTableHeader() << endl;
+	while (!dataFile.eof()) {
+		dataFile >> c;
+		cout << c << endl;
+	}
 }
 
 #endif
