@@ -10,6 +10,17 @@ std::string Character::getTableHeader() {
 				 "  MASS |    BMI ";
 }
 
+bool operator==(Character &a, Character &b) {
+	return a.id == b.id &&                 //
+				 a.name == b.name &&             //
+				 a.species == b.species &&       //
+				 a.gender == b.gender &&         //
+				 a.occupation == b.occupation && //
+				 a.color == b.color &&           //
+				 a.age == b.age &&               //
+				 a.mass - b.mass < .0001;
+}
+
 std::ostream &operator<<(std::ostream &out, const Character &c) {
 	switch (c.printStyle) {
 	case CHARACTER_STYLE_ENTRY:
@@ -39,4 +50,79 @@ std::istream &operator>>(std::istream &in, Character &c) {
 	// TODO scan relationships
 	in.ignore(256, '\n');
 	return in;
+}
+
+// Getters and setters
+std::string Character::getName() const { return name; }
+
+void Character::setName(const std::string &value) { name = value; }
+
+std::string Character::getSpecies() const { return species; }
+
+void Character::setSpecies(const std::string &value) { species = value; }
+
+std::string Character::getGender() const { return gender; }
+
+void Character::setGender(const std::string &value) { gender = value; }
+
+std::string Character::getOccupation() const { return occupation; }
+
+void Character::setOccupation(const std::string &value) { occupation = value; }
+
+std::string Character::getColor() const { return color; }
+
+void Character::setColor(const std::string &value) { color = value; }
+
+double Character::getHeight() const { return height; }
+
+void Character::setHeight(double value) { height = value; }
+
+double Character::getMass() const { return mass; }
+
+void Character::setMass(double value) { mass = value; }
+
+double Character::getBmi() const { return bmi; }
+
+void Character::setBmi(double value) { bmi = value; }
+
+int Character::getAge() const { return age; }
+
+void Character::setAge(int value) { age = value; }
+
+void Character::setPrintStyle(const CHARACTER_STYLE &value) {
+	printStyle = value;
+}
+
+int CharacterComparator::compare(const Character &a, const Character &b) {
+	switch (charProp) {
+	case CHARACTER_ID:
+		return a.id - b.id;
+	case CHARACTER_NAME:
+		return a.name.compare(b.name);
+	case CHARACTER_SPECIES:
+		return a.species.compare(b.species);
+	case CHARACTER_GENDER:
+		return a.gender.compare(b.gender);
+	case CHARACTER_OCCUPATION:
+		return a.occupation.compare(b.occupation);
+	case CHARACTER_COLOR:
+		return a.color.compare(b.color);
+	case CHARACTER_HEIGHT:
+		if (a.height > b.height) {
+			return 1;
+		}
+		return a.height < b.height;
+	case CHARACTER_MASS:
+		if (a.mass > b.mass) {
+			return 1;
+		}
+		return a.mass < b.mass;
+	case CHARACTER_BMI:
+		if (a.bmi > b.bmi) {
+			return 1;
+		}
+		return a.bmi < b.bmi;
+	case CHARACTER_AGE:
+		return a.age - b.age;
+	}
 }
