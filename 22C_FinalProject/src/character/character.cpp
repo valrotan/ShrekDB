@@ -108,20 +108,11 @@ int CharacterComparator::compare(const Character &a, const Character &b) {
 	case CHARACTER_COLOR:
 		return a.color.compare(b.color);
 	case CHARACTER_HEIGHT:
-		if (a.height > b.height) {
-			return 1;
-		}
-		return a.height < b.height;
+		return (int)(a.height - b.height);
 	case CHARACTER_MASS:
-		if (a.mass > b.mass) {
-			return 1;
-		}
-		return a.mass < b.mass;
+		return (int)(a.mass - b.mass);
 	case CHARACTER_BMI:
-		if (a.bmi > b.bmi) {
-			return 1;
-		}
-		return a.bmi < b.bmi;
+		return (int)(a.bmi - b.bmi);
 	case CHARACTER_AGE:
 		return a.age - b.age;
 	}
