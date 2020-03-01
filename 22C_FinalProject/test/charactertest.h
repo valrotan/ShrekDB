@@ -11,7 +11,12 @@ void characterTests() {
 
 	cout << "## character tests\n";
 
-	fstream dataFile("data.tsv");
+	//fstream dataFile("data.tsv");
+	fstream dataFile("C:\\Users\\taras\\Source\\Repos\\valrotan\\22C_FinalProject\\data.tsv");
+	if (!dataFile) {
+		cout << "File can't be opened..." << endl;
+		return;
+	}
 	dataFile.ignore(1024, '\n'); // header first
 	Character c;
 	cout << Character::getTableHeader() << endl;

@@ -51,7 +51,7 @@ public:
 	// trows excpetion if key is not found in the tree
 	T remove(const T &key);
 
-	// emoties the tree
+	// empties the tree
 	void empty();
 
 	// returns true if the tree is empty
