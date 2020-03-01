@@ -117,11 +117,11 @@ public:
 class CharacterPointerComparator : public Comparator<Character *> {
 private:
 	CHARACTER_PROPERTY charProp;
-	CharacterComparator *comparator; // actual comparator used underneath
+	CharacterComparator comparator; // actual comparator used underneath
 
 public:
 	CharacterPointerComparator(CHARACTER_PROPERTY cp) : charProp(cp) {
-		comparator = new CharacterComparator(charProp);
+		comparator = CharacterComparator(charProp);
 	}
 	int compare(Character *const &a, Character *const &b) override;
 

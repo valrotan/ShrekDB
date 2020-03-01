@@ -185,5 +185,5 @@ int CharacterComparator::compare(const Character &a, const Character &b) {
 
 int CharacterPointerComparator::compare(Character *const &a,
 																				Character *const &b) {
-	return comparator->compare(*a, *b);
+	return comparator.compare(*a, *b);
 }
