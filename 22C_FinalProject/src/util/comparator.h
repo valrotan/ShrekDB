@@ -30,7 +30,7 @@ int GenericComparator<T>::compare(const T &a, const T &b) {
 	} else if (a < b) {
 		return -1;
 	}
-	return 0;
+	return a == b ? 0 : 1;
 }
 
 #endif // COMPARATOR_H
