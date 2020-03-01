@@ -12,7 +12,11 @@ void characterTests() {
 	cout << "## character tests\n";
 
 	//fstream dataFile("data.tsv");
+#ifndef __APPLE__
 	fstream dataFile("C:\\Users\\taras\\Source\\Repos\\valrotan\\22C_FinalProject\\data.tsv");
+#else
+	fstream dataFile("data.tsv");
+#endif
 	if (!dataFile) {
 		cout << "File can't be opened..." << endl;
 		return;
