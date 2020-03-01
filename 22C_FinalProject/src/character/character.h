@@ -4,15 +4,43 @@
 #include <iostream>
 #include <string>
 
+enum CHARACTER_PROPERTY {
+	CHARACTER_ID = 0,
+	CHARACTER_NAME,
+	CHARACTER_SPECIES,
+	CHARACTER_GENDER,
+	CHARACTER_OCCUPATION,
+	CHARACTER_COLOR,
+	CHARACTER_HEIGHT,
+	CHARACTER_MASS,
+	CHARACTER_BMI,
+	CHARACTER_AGE
+};
+
 // table for printing a table of characters
 // entry for printing a single character
-enum CHARACTER_STYLE { CHARACTER_STYLE_TABLE = 0, CHARACTER_STYLE_ENTRY };
+enum CHARACTER_STYLE {
+	CHARACTER_STYLE_ID = 0,
+	CHARACTER_STYLE_NAME,
+	CHARACTER_STYLE_SPECIES,
+	CHARACTER_STYLE_GENDER,
+	CHARACTER_STYLE_OCCUPATION,
+	CHARACTER_STYLE_COLOR,
+	CHARACTER_STYLE_HEIGHT,
+	CHARACTER_STYLE_MASS,
+	CHARACTER_STYLE_BMI,
+	CHARACTER_STYLE_AGE,
+	CHARACTER_STYLE_TABLE,
+	CHARACTER_STYLE_ENTRY
+};
 
 class Character {
 	friend class CharacterComparator;
 	friend class CharacterPointerComparator;
 
 protected:
+	static CHARACTER_STYLE printStyle;
+
 	int id;
 	std::string name;
 	std::string species;
@@ -25,10 +53,18 @@ protected:
 	int age;
 	Character **posRelations; // make linked list
 	Character **negRelations; // make linked list
-	CHARACTER_STYLE printStyle;
 
 public:
-	Character();
+	Character(int id = 0,                  //
+						std::string name = "",       //
+						std::string species = "",    //
+						std::string gender = "",     //
+						std::string occupation = "", //
+						std::string color = "",      //
+						double height = 0,           //
+						double mass = 0,             //
+						double bmi = 0,              //
+						int age = 0);
 
 	static std::string getTableHeader();
 
@@ -41,6 +77,7 @@ public:
 	// Output stream operator
 	// outputs in a format specified by printStyle property
 	friend std::ostream &operator<<(std::ostream &out, const Character &c);
+	friend std::ostream &operator<<(std::ostream &out, const Character *c);
 
 	// Getters and setters
 	std::string getName() const;
@@ -61,23 +98,10 @@ public:
 	void setBmi(double value);
 	int getAge() const;
 	void setAge(int value);
-	void setPrintStyle(const CHARACTER_STYLE &value);
+	static void setPrintStyle(const CHARACTER_STYLE &value);
 };
 
-enum CHARACTER_PROPERTY {
-	CHARACTER_ID = 0,
-	CHARACTER_NAME,
-	CHARACTER_SPECIES,
-	CHARACTER_GENDER,
-	CHARACTER_OCCUPATION,
-	CHARACTER_COLOR,
-	CHARACTER_HEIGHT,
-	CHARACTER_MASS,
-	CHARACTER_BMI,
-	CHARACTER_AGE
-};
-
-class CharacterComparator : Comparator<Character> {
+class CharacterComparator : public Comparator<Character> {
 private:
 	CHARACTER_PROPERTY charProp;
 
@@ -90,7 +114,7 @@ public:
 	}
 };
 
-class CharacterPointerComparator : Comparator<Character *> {
+class CharacterPointerComparator : public Comparator<Character *> {
 private:
 	CHARACTER_PROPERTY charProp;
 	CharacterComparator *comparator; // actual comparator used underneath

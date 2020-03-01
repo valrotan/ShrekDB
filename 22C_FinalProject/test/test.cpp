@@ -5,8 +5,8 @@
 using namespace std;
 
 int main() {
-	//cout << "Running tests..." << endl;
-	//characterTests();
-	runListTests();
-	//runBSTTests();
+	// cout << "Running tests..." << endl;
+	// characterTests();
+	//	runListTests();
+	runBSTTests();
 }

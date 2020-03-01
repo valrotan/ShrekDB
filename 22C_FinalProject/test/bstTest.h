@@ -3,30 +3,33 @@
 
 #include <iostream>
 #include "../src/dataStructs/BST.h"
+#include "../src/character/character.h"
 
 using namespace std;
 
 void runBSTTests() {
 	cout << "running bst tests...\n";
 
-	class ReverseComp : public Comparator<int> {
-		int compare(const int &a, const int &b) override {
-			return b - a;
-		}
-		ReverseComp *clone() const override {
-			return new ReverseComp(*this);
-		}
-	};
-	ReverseComp reversecmp;
+	CharacterPointerComparator ccmp(CHARACTER_MASS);
 
-	BST<int> bst(reversecmp);
+	Character a, b;
+	a.setName("a");
+	a.setMass(11.4);
+	a.setHeight(11);
 
-	bst.add(1);
-	bst.add(2);
-	bst.add(0);
-	bst.remove(1);
+	b.setName("b");
+	b.setMass(11.2);
+	b.setHeight(11);
+	cout << &a << endl << &b << endl;
+
+	BST<Character *> bst(ccmp);
+
+	bst.add(&a);
+	bst.add(&b);
 	bst.setOrder(BST_INORDER);
 	cout << "BST\n";
+
+	Character::setPrintStyle(CHARACTER_STYLE_NAME);
 	cout << bst << endl;
 }
 

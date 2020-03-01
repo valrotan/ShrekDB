@@ -2,12 +2,26 @@
 
 #include <stdio.h>
 
-Character::Character() : printStyle(CHARACTER_STYLE_TABLE) {}
+CHARACTER_STYLE Character::printStyle = CHARACTER_STYLE_TABLE;
+
+Character::Character(int id,                 //
+										 std::string name,       //
+										 std::string species,    //
+										 std::string gender,     //
+										 std::string occupation, //
+										 std::string color,      //
+										 double height,          //
+										 double mass,            //
+										 double bmi,             //
+										 int age)
+		: id(id), name(name), species(species), gender(gender),
+			occupation(occupation), color(color), height(height), mass(mass),
+			bmi(bmi), age(age) {}
 
 std::string Character::getTableHeader() {
 	return "    ID |                             NAME |          SPECIES |      "
 				 "     GENDER |       OCCUPATION |        COLOR |  AGE | "
-				 "  MASS |    BMI ";
+				 "  MASS | HEIGHT |    BMI ";
 }
 
 bool operator==(Character &a, Character &b) {
@@ -18,24 +32,60 @@ bool operator==(Character &a, Character &b) {
 				 a.occupation == b.occupation && //
 				 a.color == b.color &&           //
 				 a.age == b.age &&               //
-				 a.mass - b.mass < .0001;
+				 a.mass - b.mass < .0001 &&      //
+				 a.height - b.height < .0001;
 }
 
 std::ostream &operator<<(std::ostream &out, const Character &c) {
-	switch (c.printStyle) {
+	switch (Character::printStyle) {
 	case CHARACTER_STYLE_ENTRY:
 		break;
 	case CHARACTER_STYLE_TABLE: {
 		char buf[512];
 		sprintf(buf,
-						"  %04d | %32.32s | %16.16s | %16.16s | %16.16s | %12.12s | %4d | "
-						"%6.1f | %6.1f ",
+						"  %04d | %24.24s | %16.16s | %16.16s | %16.16s | %12.12s | %4d | "
+						"%6.1f | %6.1f | %6.1f ",
 						c.id, c.name.c_str(), c.species.c_str(), c.gender.c_str(),
-						c.occupation.c_str(), c.color.c_str(), c.age, c.mass, c.bmi);
+						c.occupation.c_str(), c.color.c_str(), c.age, c.mass, c.height,
+						c.bmi);
 		out << buf;
-	}
+	} break;
+	case CHARACTER_STYLE_ID:
+		out << c.id;
+		break;
+	case CHARACTER_STYLE_NAME:
+		out << c.name;
+		break;
+	case CHARACTER_STYLE_SPECIES:
+		out << c.species;
+		break;
+	case CHARACTER_STYLE_GENDER:
+		out << c.gender;
+		break;
+	case CHARACTER_STYLE_OCCUPATION:
+		out << c.occupation;
+		break;
+	case CHARACTER_STYLE_COLOR:
+		out << c.color;
+		break;
+	case CHARACTER_STYLE_HEIGHT:
+		out << c.height;
+		break;
+	case CHARACTER_STYLE_MASS:
+		out << c.mass;
+		break;
+	case CHARACTER_STYLE_BMI:
+		out << c.bmi;
+		break;
+	case CHARACTER_STYLE_AGE:
+		out << c.age;
+		break;
 	}
 	return out;
+}
+
+std::ostream &operator<<(std::ostream &out, const Character *c) {
+	return out << *c;
 }
 
 std::istream &operator>>(std::istream &in, Character &c) {
