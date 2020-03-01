@@ -1,9 +1,6 @@
-// CIS22CH
-// Lab 4 - Create arithmetic expression interpreter
-// Taras Priadka
-
 #pragma once
 #include "LinkNode.h"
+#include "../util/comparator.h"
 #include <iostream>
 
 enum SORT_STATE {NO_SORT, ASCENDING, DESCENDING};
@@ -15,10 +12,14 @@ private:
 	LinkNode<T> *head;
 	LinkNode<T> *tail;
 	SORT_STATE sorted;
+	Comparator<T> *comparator;
+	
 public:
 	LinkedList();
 	LinkedList(const LinkedList&);
 	LinkedList(SORT_STATE);
+	LinkedList(Comparator<T>* comp);
+	LinkedList(SORT_STATE, Comparator<T>* comp);
 	virtual ~LinkedList();
 
 	// Adds a node to the list, depends on the SORT_STATE
@@ -57,6 +58,7 @@ template <typename T>
 LinkedList<T>::~LinkedList() {
 	emptyList();
 	delete head;
+	delete comparator;
 }
 
 template <typename T>
@@ -66,6 +68,7 @@ LinkedList<T>::LinkedList() {
 	head->next = nullptr;
 	tail = head;
 	sorted = NO_SORT;
+	comparator = new GenericComparator<T>;
 }
 
 template <typename T>
@@ -74,6 +77,7 @@ LinkedList<T>::LinkedList(const LinkedList &oldobj) {
 	head = oldobj.head; // sentinel node
 	tail = oldobj.tail;
 	sorted = oldobj.sorted;
+	comparator = oldobj.comparator;
 }
 
 template <typename T>
@@ -83,6 +87,27 @@ LinkedList<T>::LinkedList(SORT_STATE a) {
 	head->next = nullptr;
 	tail = head;
 	sorted = a;
+	comparator = new GenericComparator<T>;
+}
+
+template <typename T>
+LinkedList<T>::LinkedList(Comparator<T>* comp) {
+	count = 0;
+	head = new LinkNode<T>(); // sentinel node
+	head->next = nullptr;
+	tail = head;
+	sorted = NO_SORT;
+	comparator = comp->clone();
+}
+
+template <typename T>
+LinkedList<T>::LinkedList(SORT_STATE a, Comparator<T>* comp) {
+	count = 0;
+	head = new LinkNode<T>(); // sentinel node
+	head->next = nullptr;
+	tail = head;
+	sorted = a;
+	comparator = comp->clone();
 }
 
 template <typename T>
@@ -101,7 +126,7 @@ int LinkedList<T>::add(T data) {
 	else if (sorted == ASCENDING) {
 		LinkNode<T>* tempHead = head->next;
 		LinkNode<T>* slow = head;
-		while (tempHead != nullptr  && tempHead->data < data) {
+		while (tempHead != nullptr  && comparator->compare(tempHead->data, data) < 0) {
 			slow = slow->next;
 			tempHead = tempHead->next;
 		}
@@ -112,7 +137,7 @@ int LinkedList<T>::add(T data) {
 	else if (sorted == DESCENDING) {
 		LinkNode<T>* tempHead = head->next;
 		LinkNode<T>* slow = head;
-		while (tempHead != nullptr && tempHead->data > data) {
+		while (tempHead != nullptr && comparator->compare(tempHead->data, data) > 0) {
 			slow = slow->next;
 			tempHead = tempHead->next;
 		}
