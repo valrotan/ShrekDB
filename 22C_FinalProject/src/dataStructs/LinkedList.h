@@ -1,5 +1,5 @@
 // CIS22CH
-// Lab 3B: Stacks and queues
+// Lab 4 - Create arithmetic expression interpreter
 // Taras Priadka
 
 #pragma once
@@ -17,6 +17,7 @@ private:
 	SORT_STATE sorted;
 public:
 	LinkedList();
+	LinkedList(const LinkedList&);
 	LinkedList(SORT_STATE);
 	virtual ~LinkedList();
 
@@ -24,19 +25,19 @@ public:
 	// PRE: data - pointer to the data
 	// POST: node is allocated and added to the list
 	// returns: success message
-	int add(T *data);
+	int add(T data);
 
 	// Removes specified node from the list
 	// PRE: node - the number of node you wish to remove
 	// POST: node at that index is removed
 	// returns: data pointer at that node
-	T* remove(int node);
+	T remove(int node);
 
 	// Returns data at specified node
 	// PRE: node - index of node you wish to get dasta from
 	// POST: pointer is returned
 	// returns: pointer to data
-	T* getData(int node);
+	T getData(int node);
 
 	//Getters for count and sorted state
 	int getCount();
@@ -68,6 +69,14 @@ LinkedList<T>::LinkedList() {
 }
 
 template <typename T>
+LinkedList<T>::LinkedList(const LinkedList &oldobj) {
+	count = oldobj.count;
+	head = oldobj.head; // sentinel node
+	tail = oldobj.tail;
+	sorted = oldobj.sorted;
+}
+
+template <typename T>
 LinkedList<T>::LinkedList(SORT_STATE a) {
 	count = 0;
 	head = new LinkNode<T>(); // sentinel node
@@ -77,7 +86,7 @@ LinkedList<T>::LinkedList(SORT_STATE a) {
 }
 
 template <typename T>
-int LinkedList<T>::add(T *data) {
+int LinkedList<T>::add(T data) {
 	LinkNode<T>* adding = new LinkNode<T>(data);
 	if (count <= 0) {
 		head->next = adding;
@@ -92,7 +101,7 @@ int LinkedList<T>::add(T *data) {
 	else if (sorted == ASCENDING) {
 		LinkNode<T>* tempHead = head->next;
 		LinkNode<T>* slow = head;
-		while (tempHead != nullptr  && *(tempHead->data) < *data) {
+		while (tempHead != nullptr  && tempHead->data < data) {
 			slow = slow->next;
 			tempHead = tempHead->next;
 		}
@@ -103,7 +112,7 @@ int LinkedList<T>::add(T *data) {
 	else if (sorted == DESCENDING) {
 		LinkNode<T>* tempHead = head->next;
 		LinkNode<T>* slow = head;
-		while (tempHead != nullptr && *(tempHead->data) > *data) {
+		while (tempHead != nullptr && tempHead->data > data) {
 			slow = slow->next;
 			tempHead = tempHead->next;
 		}
@@ -115,38 +124,40 @@ int LinkedList<T>::add(T *data) {
 }
 
 template <typename T>
-T* LinkedList<T>::remove(int node) {
+T LinkedList<T>::remove(int node) {
 	int i = 0;
 	LinkNode<T>* iterator = head;
 	while (i < node) {
 		if (iterator->next == nullptr || i > count)
-			return nullptr;
+			throw "Index out of bounds";
 		iterator = iterator->next;
 		i++;
 	}
 	if (iterator->next == nullptr)
-		return nullptr;
+		throw "Index out of bounds";
 	LinkNode<T>* remove = iterator->next;
 	iterator->next = remove->next;
+	if (!iterator->next)
+		tail = iterator;
 	count--;
-	T* out = remove->data;
+	T out = (*remove).data;
 	delete remove;
 	return out;
 }
 
 template <typename T>
-T* LinkedList<T>::getData(int node) {
+T LinkedList<T>::getData(int node) {
 	int i = 0;
 	LinkNode<T>* iterator = head;
 	while (i < node) {
 		if (iterator->next == nullptr || i > count)
-			return nullptr;
+			throw "Index out of bounds";
 		iterator = iterator->next;
 		i++;
 	}
 	if (iterator->next == nullptr)
-		return nullptr;
-	return iterator->next->data;	
+		throw "Index out of bounds";
+	return iterator->next->data;
 }
 
 template <typename T>
@@ -161,7 +172,7 @@ SORT_STATE LinkedList<T>::getSorted() {
 
 template <typename T>
 int LinkedList<T>::emptyList() {
-	while (head->next != nullptr) {
+	while (head->next) {
 		LinkNode<T>* temp = head->next;
 		head->next = head->next->next;
 		temp->next = nullptr;
@@ -177,7 +188,7 @@ template <typename T>
 std::ostream& operator <<(std::ostream& out, LinkedList<T>& list) {
 	LinkNode<T> *head = list.head->getNext();
 	while (head != nullptr) {
-		out << *(head->getData()) << ", "; 
+		out << head->getData() << ", "; 
 		head = head->getNext();
 	}
 	return out;

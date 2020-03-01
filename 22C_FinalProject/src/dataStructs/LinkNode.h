@@ -1,5 +1,5 @@
 // CIS22CH
-// Lab 3B: Stacks and queues
+// Lab 4 - Create arithmetic expression interpreter
 // Taras Priadka
 
 #pragma once
@@ -9,22 +9,22 @@
 template <typename T>
 class LinkNode {
 private:
-	T* data;
+	T data;
 	LinkNode<T>* next;
 	bool sentinel;
 	template<typename U> friend class LinkedList;
 public:
-	LinkNode(T* data);
+	LinkNode(T data);
 
 	LinkNode();
 	// getters and setters for data and next
-	T* getData() { return data; }
+	T getData() { return data; }
 	void setNext(LinkNode<T> *n) { next = n; }
 	LinkNode<T>* getNext() { return next; }
 };
 
 template <typename T>
-LinkNode<T>::LinkNode(T *d) {
+LinkNode<T>::LinkNode(T d) {
 	data = d;
 	sentinel = false;
 	next = nullptr;
@@ -32,7 +32,6 @@ LinkNode<T>::LinkNode(T *d) {
 
 template <typename T>
 LinkNode<T>::LinkNode() {
-	data = nullptr;
 	sentinel = true;
 	next = nullptr;
 }

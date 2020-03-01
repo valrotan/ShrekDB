@@ -1,5 +1,5 @@
 // CIS22CH
-// Lab 3B: Stacks and queues
+// Lab 4 - Create arithmetic expression interpreter
 // Taras Priadka
 #pragma once
 
@@ -14,41 +14,62 @@ public:
 	// Pre: void
 	// Post: first item is removed
 	// returns: the item dequeued or nullptr if it isn't present
-	T* dequeue();
+	T dequeue();
 
 	// Enqueues list item to the end
 	// Pre: data to be inserted
 	// Post: data is added to the back
 	// returns: void
-	void enqueue(T* data);
+	void enqueue(T data);
 
 	// Shows the item at the front of the queue
 	// Pre: void
 	// Post: data is retured
 	// returns: pointer to the data at the front
-	T* front();
+	T front();
 
 	// Shows the item at the rear of the queue
 	// Pre: void
 	// Post: data is retured
 	// returns: pointer to the data at the rear
-	T* rear();
+	T rear();
 
 	// Empties the queue and frees the nodes
 	// Pre: void
 	// Post: all nodes are removed and freed
 	// returns: void
 	void empty();
+
+	//returns the number of elements in the queue
+	int count();
+
+	//check if queue is empty
+	bool isEmpty();
+
+	template <typename U>
+	friend std::ostream& operator <<(std::ostream& out, Queue<U>& queue);
 };
 
 template<typename T>
-T* Queue<T>::front()
+T Queue<T>::front()
 {
 	return this->getData(0);
 }
 
 template<typename T>
-T* Queue<T>::rear()
+bool Queue<T>::isEmpty() {
+	return this->getCount() <= 0;
+}
+
+
+template<typename T>
+int Queue<T>::count() {
+	return this->getCount();
+}
+
+
+template<typename T>
+T Queue<T>::rear()
 {
 	return this->getData(this->getCount() - 1);
 }
@@ -60,19 +81,25 @@ void Queue<T>::empty()
 }
 
 template<typename T>
-Queue<T>::~Queue()
-{
-	this->emptyList();
-}
+Queue<T>::~Queue(){}
 
 template<typename T>
-T* Queue<T>::dequeue()
+T Queue<T>::dequeue()
 {
 	return this->remove(0);
 }
 
 template<typename T>
-void Queue<T>::enqueue(T* data)
+void Queue<T>::enqueue(T data)
 {
 	this->add(data);
+}
+
+
+template <typename T>
+std::ostream& operator <<(std::ostream& out, Queue<T>& list) {
+	for (int i = 0; i < list.getCount(); i++) {
+		out << list.getData(i) << " ";
+	}
+	return out;
 }
