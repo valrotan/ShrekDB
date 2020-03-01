@@ -22,7 +22,7 @@ void characterTests() {
 
 	Character a, b;
 	a.setName("a");
-	a.setMass(12.4);
+	a.setMass(11.4);
 	a.setHeight(11);
 	b.setName("b");
 	b.setMass(11.2);
@@ -48,6 +48,9 @@ void characterTests() {
 		cout << "ERROR IN COMPARATOR BY NAME\n";
 	}
 	if (pcmpByMass.compare(&a, &b) <= 0) {
+		cout << "ERROR IN COMPARATOR BY MASS\n";
+	}
+	if (pcmpByMass.compare(&b, &a) >= 0) {
 		cout << "ERROR IN COMPARATOR BY MASS\n";
 	}
 	if (pcmpByHeight.compare(&a, &b) != 0) {

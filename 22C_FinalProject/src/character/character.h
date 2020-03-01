@@ -85,6 +85,9 @@ public:
 	CharacterComparator() : charProp(CHARACTER_ID) {}
 	CharacterComparator(CHARACTER_PROPERTY cp) : charProp(cp) {}
 	int compare(const Character &a, const Character &b) override;
+	CharacterComparator *clone() const override {
+		return new CharacterComparator(*this);
+	}
 };
 
 class CharacterPointerComparator : Comparator<Character *> {
@@ -97,4 +100,8 @@ public:
 		comparator = new CharacterComparator(charProp);
 	}
 	int compare(Character *const &a, Character *const &b) override;
+
+	CharacterPointerComparator *clone() const override {
+		return new CharacterPointerComparator(*this);
+	}
 };

@@ -1,16 +1,36 @@
 #ifndef COMPARATOR_H
 #define COMPARATOR_H
 
-template<typename T>
+template <typename T>
 class Comparator {
 public:
 	virtual ~Comparator() {}
 
-	// analogous to a - b
 	// return > 0 if a > b
 	//        < 0 if a < b
 	//          0 if a == b
 	virtual int compare(const T &a, const T &b) = 0;
+
+	virtual Comparator<T> *clone() const = 0;
 };
+
+template <typename T>
+class GenericComparator : public Comparator<T> { // anonymous generic comparator
+	int compare(const T &a, const T &b) override;
+
+	GenericComparator<T> *clone() const override {
+		return new GenericComparator<T>(*this);
+	}
+};
+
+template <typename T>
+int GenericComparator<T>::compare(const T &a, const T &b) {
+	if (a > b) {
+		return 1;
+	} else if (a < b) {
+		return -1;
+	}
+	return 0;
+}
 
 #endif // COMPARATOR_H

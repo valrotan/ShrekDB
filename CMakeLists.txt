@@ -9,11 +9,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 file( GLOB CHARACTER_SOURCES 22C_FinalProject/src/character/*.cpp )
 file( GLOB UI_SOURCES 22C_FinalProject/src/ui/*.cpp )
 file( GLOB UTIL_SOURCES 22C_FinalProject/src/util/*.cpp )
+file( GLOB DATA_STRUCTS_SOURCES 22C_FinalProject/src/dataStructs/*.cpp )
 
 file( GLOB APP_SOURCES
 	${CHARACTER_SOURCES}
 	${UI_SOURCES}
 	${UTIL_SOURCES}
+	${DATA_STRUCTS_SOURCES}
 )
 
 file( GLOB TEST_SOURCES
