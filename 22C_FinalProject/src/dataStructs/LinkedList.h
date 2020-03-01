@@ -1,32 +1,37 @@
 #pragma once
-#include "LinkNode.h"
 #include "../util/comparator.h"
+#include "LinkNode.h"
 #include <iostream>
 
-enum SORT_STATE {NO_SORT, ASCENDING, DESCENDING};
+enum SORT_STATE { NO_SORT, ASCENDING, DESCENDING };
 
 template <typename T>
 class LinkedList {
-private:
+public:
 	int count;
 	LinkNode<T> *head;
 	LinkNode<T> *tail;
 	SORT_STATE sorted;
 	Comparator<T> *comparator;
-	
+
 public:
 	LinkedList();
-	LinkedList(const LinkedList&);
+	LinkedList(const LinkedList &);
 	LinkedList(SORT_STATE);
-	LinkedList(Comparator<T>* comp);
-	LinkedList(SORT_STATE, Comparator<T>* comp);
+	LinkedList(Comparator<T> *comp);
+	LinkedList(SORT_STATE, Comparator<T> *comp);
 	virtual ~LinkedList();
+
+	/* Find index of data
+	 * Post: index of data in list is returned. -1 if not found
+	 */
+	int find(const T &data);
 
 	// Adds a node to the list, depends on the SORT_STATE
 	// PRE: data - pointer to the data
 	// POST: node is allocated and added to the list
 	// returns: success message
-	int add(T data);
+	int add(const T &data);
 
 	// Removes specified node from the list
 	// PRE: node - the number of node you wish to remove
@@ -40,7 +45,7 @@ public:
 	// returns: pointer to data
 	T getData(int node);
 
-	//Getters for count and sorted state
+	// Getters for count and sorted state
 	int getCount();
 	SORT_STATE getSorted();
 
@@ -51,7 +56,7 @@ public:
 	int emptyList();
 
 	template <typename U>
-	friend std::ostream& operator <<(std::ostream&, LinkedList<U>&);
+	friend std::ostream &operator<<(std::ostream &, LinkedList<U> &);
 };
 
 template <typename T>
@@ -91,7 +96,7 @@ LinkedList<T>::LinkedList(SORT_STATE a) {
 }
 
 template <typename T>
-LinkedList<T>::LinkedList(Comparator<T>* comp) {
+LinkedList<T>::LinkedList(Comparator<T> *comp) {
 	count = 0;
 	head = new LinkNode<T>(); // sentinel node
 	head->next = nullptr;
@@ -101,7 +106,7 @@ LinkedList<T>::LinkedList(Comparator<T>* comp) {
 }
 
 template <typename T>
-LinkedList<T>::LinkedList(SORT_STATE a, Comparator<T>* comp) {
+LinkedList<T>::LinkedList(SORT_STATE a, Comparator<T> *comp) {
 	count = 0;
 	head = new LinkNode<T>(); // sentinel node
 	head->next = nullptr;
@@ -111,33 +116,32 @@ LinkedList<T>::LinkedList(SORT_STATE a, Comparator<T>* comp) {
 }
 
 template <typename T>
-int LinkedList<T>::add(T data) {
-	LinkNode<T>* adding = new LinkNode<T>(data);
+int LinkedList<T>::add(const T &data) {
+	LinkNode<T> *adding = new LinkNode<T>(data);
 	if (count <= 0) {
 		head->next = adding;
 		tail = adding;
 		count = 1;
-	}
-	else if (sorted == NO_SORT) {
+	} else if (sorted == NO_SORT) {
 		tail->next = adding;
 		tail = adding;
 		count++;
-	}
-	else if (sorted == ASCENDING) {
-		LinkNode<T>* tempHead = head->next;
-		LinkNode<T>* slow = head;
-		while (tempHead != nullptr  && comparator->compare(tempHead->data, data) < 0) {
+	} else if (sorted == ASCENDING) {
+		LinkNode<T> *tempHead = head->next;
+		LinkNode<T> *slow = head;
+		while (tempHead != nullptr &&
+					 comparator->compare(tempHead->data, data) < 0) {
 			slow = slow->next;
 			tempHead = tempHead->next;
 		}
 		slow->next = adding;
 		adding->next = tempHead;
 		count++;
-	}
-	else if (sorted == DESCENDING) {
-		LinkNode<T>* tempHead = head->next;
-		LinkNode<T>* slow = head;
-		while (tempHead != nullptr && comparator->compare(tempHead->data, data) > 0) {
+	} else if (sorted == DESCENDING) {
+		LinkNode<T> *tempHead = head->next;
+		LinkNode<T> *slow = head;
+		while (tempHead != nullptr &&
+					 comparator->compare(tempHead->data, data) > 0) {
 			slow = slow->next;
 			tempHead = tempHead->next;
 		}
@@ -149,9 +153,21 @@ int LinkedList<T>::add(T data) {
 }
 
 template <typename T>
+int LinkedList<T>::find(const T &data) {
+	LinkNode<T> *p = head->next;
+	for (int i = 0; i < count; i++) {
+		if (comparator->compare(p->data, data) == 0) {
+			return i;
+		}
+		p = p->next;
+	}
+	return -1;
+}
+
+template <typename T>
 T LinkedList<T>::remove(int node) {
 	int i = 0;
-	LinkNode<T>* iterator = head;
+	LinkNode<T> *iterator = head;
 	while (i < node) {
 		if (iterator->next == nullptr || i > count)
 			throw "Index out of bounds";
@@ -160,7 +176,7 @@ T LinkedList<T>::remove(int node) {
 	}
 	if (iterator->next == nullptr)
 		throw "Index out of bounds";
-	LinkNode<T>* remove = iterator->next;
+	LinkNode<T> *remove = iterator->next;
 	iterator->next = remove->next;
 	if (!iterator->next)
 		tail = iterator;
@@ -173,7 +189,7 @@ T LinkedList<T>::remove(int node) {
 template <typename T>
 T LinkedList<T>::getData(int node) {
 	int i = 0;
-	LinkNode<T>* iterator = head;
+	LinkNode<T> *iterator = head;
 	while (i < node) {
 		if (iterator->next == nullptr || i > count)
 			throw "Index out of bounds";
@@ -198,7 +214,7 @@ SORT_STATE LinkedList<T>::getSorted() {
 template <typename T>
 int LinkedList<T>::emptyList() {
 	while (head->next) {
-		LinkNode<T>* temp = head->next;
+		LinkNode<T> *temp = head->next;
 		head->next = head->next->next;
 		temp->next = nullptr;
 		delete temp;
@@ -210,10 +226,10 @@ int LinkedList<T>::emptyList() {
 }
 
 template <typename T>
-std::ostream& operator <<(std::ostream& out, LinkedList<T>& list) {
+std::ostream &operator<<(std::ostream &out, LinkedList<T> &list) {
 	LinkNode<T> *head = list.head->getNext();
 	while (head != nullptr) {
-		out << head->getData() << ", "; 
+		out << head->getData() << ", ";
 		head = head->getNext();
 	}
 	return out;
