@@ -20,8 +20,9 @@ public:
 	T getData() const;
 	void setData(const T &value);
 
-	// only really need == for graph nodes
+	// these are not to be used. Use comparators instead
 	friend bool operator==(const GraphNode<T> &a, const GraphNode<T> &b) {
+		std::cout << "PANIC" << std::endl;
 		return a.data == b.data;
 	}
 
@@ -59,11 +60,20 @@ void GraphNode<T>::setData(const T &value) {
 template <typename T>
 class GraphNodeComparator : public Comparator<GraphNode<T>> {
 
+	Comparator<T> *dataComparator;
+
 public:
-	GraphNodeComparator() {}
+	GraphNodeComparator() : dataComparator(new GenericComparator<T>) {}
+	GraphNodeComparator(const Comparator<T> &dataComp) {
+		dataComparator = dataComp.clone();
+	}
+	GraphNodeComparator(const GraphNodeComparator<T> &dataComp) {
+		dataComparator = dataComp.dataComparator->clone();
+	}
+	~GraphNodeComparator() { delete dataComparator; }
 
 	int compare(const GraphNode<T> &a, const GraphNode<T> &b) override {
-		return a == b ? 0 : 1;
+		return dataComparator->compare(a.getData(), b.getData());
 	}
 	GraphNodeComparator *clone() const override {
 		return new GraphNodeComparator(*this);
@@ -76,10 +86,12 @@ private:
 	GraphNodeComparator<T> comparator; // actual comparator used underneath
 
 public:
-	GraphNodePointerComparator() { comparator = GraphNodeComparator<T>(); }
+	GraphNodePointerComparator() : comparator(GraphNodeComparator<T>()) {}
+	GraphNodePointerComparator(const Comparator<T> &dataComp)
+			: comparator(GraphNodeComparator<T>(dataComp)) {}
 	virtual int compare(const GraphNode<T> *const &a,
 											const GraphNode<T> *const &b) override {
-		return *a == *b ? 0 : 1;
+		return comparator.compare(*a, *b);
 	}
 
 	virtual GraphNodePointerComparator<T> *clone() const override {

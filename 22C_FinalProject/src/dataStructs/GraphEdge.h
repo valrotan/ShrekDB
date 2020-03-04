@@ -11,20 +11,20 @@ class GraphEdge {
 
 private:
 	const GraphNode<T> *a, *b;
-	bool positive;
+	bool isPositive;
 
 public:
 	GraphEdge(const GraphNode<T> *a, const GraphNode<T> *b) : a(a), b(b) {}
-	GraphEdge(const GraphNode<T> *a, const GraphNode<T> *b, bool positive)
-			: a(a), b(b), positive(positive) {}
+	GraphEdge(const GraphNode<T> *a, const GraphNode<T> *b, bool isPositive)
+			: a(a), b(b), isPositive(isPositive) {}
 	GraphEdge() {}
 
 	const GraphNode<T> *getA() const;
 	void setA(const GraphNode<T> *value);
 	const GraphNode<T> *getB() const;
 	void setB(const GraphNode<T> *value);
-	bool getPositive() const;
-	void setPositive(bool value);
+	bool getIsPositive() const;
+	void setIsPositive(bool value);
 
 	// only really need == for graph edges
 	template <typename U>
@@ -38,11 +38,17 @@ public:
 	}
 
 	friend std::ostream &operator<<(std::ostream &out, const GraphEdge<T> &e) {
-		out << e.a << " - " << e.b;
+		if (e.isPositive)
+			out << e.a << " + " << e.b;
+		else
+			out << e.a << " - " << e.b;
 		return out;
 	}
 	friend std::ostream &operator<<(std::ostream &out, const GraphEdge<T> *e) {
-		out << e->a << " - " << e->b;
+		if (e->isPositive)
+			out << e->a << " + " << e->b;
+		else
+			out << e->a << " - " << e->b;
 		return out;
 	}
 };
@@ -68,20 +74,20 @@ void GraphEdge<T>::setB(const GraphNode<T> *value) {
 }
 
 template <typename T>
-bool GraphEdge<T>::getPositive() const {
-	return positive;
+bool GraphEdge<T>::getIsPositive() const {
+	return isPositive;
 }
 
 template <typename T>
-void GraphEdge<T>::setPositive(bool value) {
-	positive = value;
+void GraphEdge<T>::setIsPositive(bool value) {
+	isPositive = value;
 }
 
 template <typename T>
 bool operator==(const GraphEdge<T> &a, const GraphEdge<T> &b) {
-	if (*a.a == *b.a && *a.b == *b.b) {
+	if (*a.a == *b.a && *a.b == *b.b && a.isPositive == b.isPositive) {
 		return true;
-	} else if (*a.a == *b.b && *a.b == *b.a) {
+	} else if (*a.a == *b.b && *a.b == *b.a && a.isPositive == b.isPositive) {
 		return true;
 	}
 	return false;
@@ -90,16 +96,45 @@ bool operator==(const GraphEdge<T> &a, const GraphEdge<T> &b) {
 template <typename T>
 class GraphEdgeComparator : public Comparator<GraphEdge<T>> {
 
-public:
-	GraphEdgeComparator() {}
+private:
+	Comparator<T> *dataComparator;
 
-	int compare(const GraphEdge<T> &a, const GraphEdge<T> &b) override {
-		return a == b ? 0 : 1;
+public:
+	GraphEdgeComparator() : dataComparator(new GenericComparator<T>) {}
+	GraphEdgeComparator(const Comparator<T> &comparator)
+			: dataComparator(comparator.clone()) {}
+	~GraphEdgeComparator() { delete dataComparator; }
+	GraphEdgeComparator(const GraphEdgeComparator<T> &old) {
+		dataComparator = old.dataComparator->clone();
 	}
+
+	int compare(const GraphEdge<T> &a, const GraphEdge<T> &b) override;
 	GraphEdgeComparator<T> *clone() const override {
-		return new GraphEdgeComparator<T>(*this);
+		return new GraphEdgeComparator<T>(*dataComparator);
 	}
 };
+
+template <typename T>
+int GraphEdgeComparator<T>::compare(const GraphEdge<T> &a,
+																		const GraphEdge<T> &b) {
+	if (dataComparator->compare(a.getA()->getData(), b.getA()->getData()) == 0 &&
+			dataComparator->compare(a.getB()->getData(), b.getB()->getData()) == 0) {
+		if (a.getIsPositive() == b.getIsPositive()) {
+			return 0;
+		} else {
+			return 0; // dont check sign
+		}
+	}
+	if (dataComparator->compare(a.getA()->getData(), b.getB()->getData()) == 0 &&
+			dataComparator->compare(a.getB()->getData(), b.getA()->getData()) == 0) {
+		if (a.getIsPositive() == b.getIsPositive()) {
+			return 0;
+		} else {
+			return 0; // dont check sign
+		}
+	}
+	return 1;
+}
 
 template <typename T>
 class GraphEdgePointerComparator : public Comparator<const GraphEdge<T> *> {
@@ -108,12 +143,15 @@ private:
 
 public:
 	GraphEdgePointerComparator() { comparator = GraphEdgeComparator<T>(); }
-	virtual int compare(const GraphEdge<T> *const &a,
-											const GraphEdge<T> *const &b) override {
-		return *a == *b ? 0 : 1;
+	GraphEdgePointerComparator(const Comparator<T> &comparator)
+			: comparator(GraphEdgeComparator<T>(comparator)) {}
+
+	int compare(const GraphEdge<T> *const &a,
+							const GraphEdge<T> *const &b) override {
+		return comparator.compare(*a, *b);
 	}
 
-	virtual GraphEdgePointerComparator<T> *clone() const override {
+	GraphEdgePointerComparator<T> *clone() const override {
 		return new GraphEdgePointerComparator<T>(*this);
 	}
 };

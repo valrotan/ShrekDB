@@ -3,42 +3,116 @@
 
 #include "../src/character/character.h"
 #include "../src/dataStructs/Graph.h"
+#include <fstream>
 #include <iostream>
 
 using namespace std;
 
-void runGraphTests() {
-	cout << "running graph tests...\n";
+void utilTest() {
+	cout << "running util tests...\n";
 
-	try {
-		Graph<int> g;
-		g.addNode(1);
-		g.addNode(2);
-		g.addNode(3);
-		g.addNode(4);
-		g.removeNode(4);
-		g.addNode(4);
-		g.addNode(5);
-		g.addNode(6);
-		cout << g.findNode(3) << endl;
+	Character *c1 = new Character(4, "john doe", "dog", "male", "c teacher",
+																"orange", 1.34, 34, 0, 4);
+	Character *c2 = new Character(4, "john d", "dog", "male", "c teacher",
+																"orange", 1.34, 34, 0, 4);
+	CharacterPointerComparator cpc(CHARACTER_ID);
+	GraphNodePointerComparator<Character *> gnpc(cpc);
 
-		g.addEdge(1, 2);
-		g.addEdge(2, 3);
-		g.addEdge(4, 6);
-		g.addEdge(4, 5);
-		g.addEdge(1, 4);
-		g.removeEdge(1, 4);
-		try {
-			g.addEdge(1, -1);
-		} catch (...) {
-			cout << "edge checking ok" << endl;
-		}
+	GraphNode<Character *> *a = new GraphNode<Character *>(c1);
+	GraphNode<Character *> *b = new GraphNode<Character *>(c2);
+	cout << gnpc.compare(a, b) << endl;
+	delete a;
+	delete b;
+	delete c1;
+	delete c2;
+}
 
-		cout << g;
-		g.clear();
-	} catch (const char *e) {
-		cout << e << endl;
+void graphTest() {
+	cout << "running graph test...\n";
+
+	CharacterPointerComparator cpc2(CHARACTER_NAME);
+	Graph<Character *> g(cpc2);
+
+// read characters
+#ifndef __APPLE__
+	fstream dataFile(
+			"C:\\Users\\taras\\Source\\Repos\\valrotan\\22C_FinalProject\\data.tsv");
+#else
+	fstream dataFile("data.tsv");
+#endif
+	if (!dataFile) {
+		cout << "File can't be opened..." << endl;
+		return;
 	}
+	dataFile.ignore(1024, '\n'); // header first
+	cout << Character::getTableHeader() << endl;
+	while (!dataFile.eof()) {
+		Character *c = new Character;
+		dataFile >> *c;
+		cout << c << endl;
+		g.addNode(c);
+	}
+	dataFile.close();
+
+	cout << g.countNodes() << endl;
+
+	// read relationships
+#ifndef __APPLE__
+	fstream posFile("C:\\Users\\taras\\Source\\Repos\\valrotan\\22C_"
+									"FinalProject\\positive.tsv");
+#else
+	ifstream posFile("positive.tsv");
+#endif
+#ifndef __APPLE__
+	fstream negFile("C:\\Users\\taras\\Source\\Repos\\valrotan\\22C_"
+									"FinalProject\\negative.tsv");
+#else
+	ifstream negFile("negative.tsv");
+#endif
+	if (!negFile || !posFile) {
+		cout << "File can't be opened..." << endl;
+		return;
+	}
+
+	int a, b;
+	while (!posFile.eof()) {
+		posFile >> a >> b;
+		cout << a << " " << b << endl;
+		try {
+			g.addEdge(g.getNodeByIndex(a - 1), g.getNodeByIndex(b - 1), true);
+		} catch (const char *e) {
+			cout << e << " " << a << " " << b << endl;
+		}
+	}
+	posFile.close();
+	cout << "Negatives\n";
+	while (!negFile.eof()) {
+		negFile >> a >> b;
+		cout << a << " " << b << endl;
+		try {
+			g.addEdge(g.getNodeByIndex(a - 1), g.getNodeByIndex(b - 1));
+		} catch (const char *e) {
+			cout << e << " " << a << " " << b << endl;
+		}
+	}
+	negFile.close();
+	cout << g.countEdges() << endl;
+	cout << g.containsEdge(g.getNodeByIndex(0), g.getNodeByIndex(15)) << endl;
+
+	Character::setPrintStyle(CHARACTER_STYLE_NAME);
+	cout << g;
+
+	for (int i = 0; i < g.countNodes(); i++) {
+		delete g.getNodeByIndex(i);
+	}
+
+	//	cout << "\nokay\n";
+}
+
+void runGraphTests() {
+	cout << "running graph tests...\n\n";
+	utilTest();
+	graphTest();
 }
 
 #endif // GRAPHTEST_H

@@ -116,16 +116,16 @@ public:
 
 class CharacterPointerComparator : public Comparator<Character *> {
 private:
-	CHARACTER_PROPERTY charProp;
 	CharacterComparator comparator; // actual comparator used underneath
 
 public:
-	CharacterPointerComparator(CHARACTER_PROPERTY cp) : charProp(cp) {
-		comparator = CharacterComparator(charProp);
-	}
+	CharacterPointerComparator(CHARACTER_PROPERTY cp)
+			: comparator(CharacterComparator(cp)) {}
 	int compare(Character *const &a, Character *const &b) override;
 
 	CharacterPointerComparator *clone() const override {
-		return new CharacterPointerComparator(*this);
+
+		CharacterPointerComparator *cpc = new CharacterPointerComparator(*this);
+		return cpc;
 	}
 };

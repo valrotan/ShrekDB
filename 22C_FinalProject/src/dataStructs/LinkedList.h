@@ -7,7 +7,7 @@ enum SORT_STATE { NO_SORT, ASCENDING, DESCENDING };
 
 template <typename T>
 class LinkedList {
-public:
+private:
 	int count;
 	LinkNode<T> *head;
 	LinkNode<T> *tail;
@@ -18,8 +18,8 @@ public:
 	LinkedList();
 	LinkedList(const LinkedList &);
 	LinkedList(SORT_STATE);
-	LinkedList(Comparator<T> *comp);
-	LinkedList(SORT_STATE, Comparator<T> *comp);
+	LinkedList(const Comparator<T> &comp);
+	LinkedList(SORT_STATE, const Comparator<T> &comp);
 	virtual ~LinkedList();
 
 	/* Find index of data
@@ -96,23 +96,23 @@ LinkedList<T>::LinkedList(SORT_STATE a) {
 }
 
 template <typename T>
-LinkedList<T>::LinkedList(Comparator<T> *comp) {
+LinkedList<T>::LinkedList(const Comparator<T> &comp) {
 	count = 0;
 	head = new LinkNode<T>(); // sentinel node
 	head->next = nullptr;
 	tail = head;
 	sorted = NO_SORT;
-	comparator = comp->clone();
+	comparator = comp.clone();
 }
 
 template <typename T>
-LinkedList<T>::LinkedList(SORT_STATE a, Comparator<T> *comp) {
+LinkedList<T>::LinkedList(SORT_STATE a, const Comparator<T> &comp) {
 	count = 0;
 	head = new LinkNode<T>(); // sentinel node
 	head->next = nullptr;
 	tail = head;
 	sorted = a;
-	comparator = comp->clone();
+	comparator = comp.clone();
 }
 
 template <typename T>
