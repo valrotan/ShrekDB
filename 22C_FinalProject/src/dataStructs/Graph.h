@@ -1,6 +1,7 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
+#include "../util/color.h"
 #include "GraphEdge.h"
 #include "LinkedList.h"
 #include <iomanip>
@@ -210,33 +211,53 @@ std::ostream &operator<<(std::ostream &out, Graph<T> &g) {
 	out << *g.edges << std::endl;
 
 	out << "Graph\n";
+
+	int rows = 5;
+
 	for (int i = 0; i < g.nodes->getCount(); i++) {
 		std::stringstream s;
 		s << g.getNodeByIndex(i);
-		out << std::setw(12) << s.str().substr(0, 12) << " |";
+		out << std::setw(20) << s.str().substr(0, 18)
+				<< Color(WHITE, static_cast<COLOR>(i % 6 + 3)) << " " << Color(RESET)
+				<< "|";
 		for (int j = 0; j < g.nodes->getCount(); j++) {
 			if (g.containsEdge(g.getNodeByIndex(i), g.getNodeByIndex(j))) {
 				if (g.isEdgePositive(g.getNodeByIndex(i), g.getNodeByIndex(j))) {
-					out << "+|";
+					out << Color(WHITE, BRIGHT_GREEN) << "+" << Color(RESET) << "|";
 				} else {
-					out << "-|";
+					out << Color(WHITE, BRIGHT_RED) << "-" << Color(RESET) << "|";
 				}
 			} else {
-				out << " |";
+				if (j % 2)
+					out << Color(GRAY, GRAY) << " " << Color(RESET) << "|";
+				else
+					out << " |";
 			}
 		}
 		out << std::endl;
 	}
 
-	int rows = 6;
+	//	out << std::setw(14);
+	//	for (int i = 0; i < g.nodes->getCount() + 1; i++) {
+	//		out << "--";
+	//	}
+	//	out << std::endl;
+
 	for (int i = 0; i < rows; i++) {
-		out << std::setw(13 + i * 2) << " ";
+		out << std::setw(22 + i * 2) << " ";
 		for (int j = i; j < g.countNodes(); j += rows) {
 			T el = g.getNodeByIndex(j);
 			std::stringstream s;
 			s << el;
-			out << "|" << std::setw(rows * 2 - 1) << std::left
-					<< s.str().substr(0, rows * 2 - 2);
+			out << Color(WHITE, static_cast<COLOR>(i % 6 + 3)) << " " << Color(RESET);
+
+			int k;
+			for (k = 0; k < s.str().length() && k < rows * 2 - 2; k++)
+				if (k % 2)
+					out << Color(WHITE, GRAY) << s.str()[k] << Color(RESET);
+				else
+					out << Color(RESET) << s.str()[k];
+			out << std::setw(rows * 2 - 1 - k) << " ";
 		}
 		out << std::endl;
 	}

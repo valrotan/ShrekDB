@@ -7,7 +7,7 @@ static const int WINDOWS_COLORS[] = {0, 8,  15, 4, 2,  1,  14, 5,
 																		 3, 12, 10, 9, 13, 11, 7,  15};
 #else
 static const int ANSI_COLORS[] = {30, //
-																	40, //
+																	90, //
 																	97, //
 																	31, //
 																	32, //
