@@ -11,7 +11,7 @@ int main() {
 	// cout << "Running tests..." << endl;
 	// characterTests();
 	//	runListTests();
-	//	runBSTTests();
-	runGraphTests();
-	runUtilTests();
+	runBSTTests();
+	//	runGraphTests();
+	//	runUtilTests();
 }

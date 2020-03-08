@@ -24,10 +24,12 @@ private:
 	Comparator<T> *comparator;
 
 	// private helper functions
+	BST_Node<T> *createNode(T data);
+
 	BST_Node<T> *findLargest(BST_Node<T> *root);
 	BST_Node<T> *findSmallest(BST_Node<T> *root);
-	void addHelper(BST_Node<T> *node, const T &val);
-	BST_Node<T> *searchHelper(BST_Node<T> *root, const T &key);
+	void addHelper(BST_Node<T> *node, const T &val, int &nOps);
+	BST_Node<T> *searchHelper(BST_Node<T> *root, const T &key, int &nOps);
 	BST_Node<T> *removeHelper(BST_Node<T> *root, const T &key);
 	int count(BST_Node<T> *node);
 
@@ -41,11 +43,11 @@ public:
 	BST(const T &data, const Comparator<T> &comparator);
 	BST();
 	BST(const Comparator<T> &comparator);
-	BST_Node<T> *createNode(T data);
 	~BST();
 
 	// add/remove data into the tree
 	void add(const T &data);
+	void add(const T &data, int &nOps);
 
 	// removes value from the tree and returns it
 	// trows excpetion if key is not found in the tree
@@ -67,6 +69,7 @@ public:
 	// searches for value key in the tree based on
 	// throws exception if key is not found in the tree
 	T search(const T &key);
+	T search(const T &key, int &nOps);
 
 	// find largest/smallest
 	T findLargestData();
@@ -125,6 +128,8 @@ BST<T>::~BST() {
 
 template <typename T>
 T BST<T>::findLargestData() {
+	if (!root)
+		throw "Exception: tree is empty";
 	return findLargest(this->root)->getData();
 }
 
@@ -137,6 +142,8 @@ BST_Node<T> *BST<T>::findLargest(BST_Node<T> *root) {
 
 template <typename T>
 T BST<T>::findSmallestData() {
+	if (!root)
+		throw "Exception: tree is empty";
 	return findSmallest(this->root)->getData();
 }
 
@@ -148,17 +155,19 @@ BST_Node<T> *BST<T>::findSmallest(BST_Node<T> *root) {
 }
 
 template <typename T>
-void BST<T>::addHelper(BST_Node<T> *node, const T &val) {
+void BST<T>::addHelper(BST_Node<T> *node, const T &val, int &nOps) {
+	nOps++;
 	if (comparator->compare(val, node->data) < 0) {
 		if (node->left) {
-			addHelper(node->left, val);
+			addHelper(node->left, val, nOps);
 		} else {
 			node->left = createNode(val);
 		}
 	} else {
 		if (node->right) {
-			addHelper(node->right, val);
+			addHelper(node->right, val, nOps);
 		} else {
+			nOps++;
 			node->right = createNode(val);
 		}
 	}
@@ -166,12 +175,18 @@ void BST<T>::addHelper(BST_Node<T> *node, const T &val) {
 
 template <typename T>
 void BST<T>::add(const T &data) {
-	if (this->root == nullptr)
+	int nOps = 0;
+	add(data, nOps);
+}
+
+template <typename T>
+void BST<T>::add(const T &data, int &nOps) {
+	if (this->root == nullptr) {
+		nOps++;
 		root = createNode(data);
-	else {
-		addHelper(this->root, data);
+	} else {
+		addHelper(this->root, data, nOps);
 	}
-	return;
 }
 
 template <typename T>
@@ -245,6 +260,7 @@ void BST<T>::emptyHelper(BST_Node<T> *node) {
 template <typename T>
 void BST<T>::empty() {
 	emptyHelper(root);
+	root = nullptr;
 }
 
 template <typename T>
@@ -267,7 +283,8 @@ int BST<T>::count() {
 
 template <typename T>
 bool BST<T>::contains(const T &key) {
-	BST_Node<T> *node = searchHelper(this->root, key);
+	int nOps = 0;
+	BST_Node<T> *node = searchHelper(this->root, key, nOps);
 	if (node)
 		return true;
 	else {
@@ -277,7 +294,8 @@ bool BST<T>::contains(const T &key) {
 
 template <typename T>
 T BST<T>::search(const T &key) {
-	BST_Node<T> *node = searchHelper(this->root, key);
+	int nOps = 0;
+	BST_Node<T> *node = searchHelper(this->root, key, nOps);
 	if (node)
 		return node->data;
 	else {
@@ -286,15 +304,26 @@ T BST<T>::search(const T &key) {
 }
 
 template <typename T>
-BST_Node<T> *BST<T>::searchHelper(BST_Node<T> *root, const T &key) {
+T BST<T>::search(const T &key, int &nOps) {
+	BST_Node<T> *node = searchHelper(this->root, key, nOps);
+	if (node)
+		return node->data;
+	else {
+		throw "Data doesn't exist in BST.";
+	}
+}
+
+template <typename T>
+BST_Node<T> *BST<T>::searchHelper(BST_Node<T> *root, const T &key, int &nOps) {
 	if (!root)
 		return nullptr;
-	if (comparator->compare(key, root->data) == 0)
-		return root;
-	else if (comparator->compare(key, root->data) < 0)
-		return searchHelper(root->left, key);
-	else
-		return searchHelper(root->right, key);
+	nOps++;
+	if (comparator->compare(key, root->data) < 0)
+		return searchHelper(root->left, key, nOps);
+	nOps++;
+	if (comparator->compare(key, root->data) > 0)
+		return searchHelper(root->right, key, nOps);
+	return root;
 }
 
 template <typename T>
