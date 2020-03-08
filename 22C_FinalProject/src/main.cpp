@@ -2,4 +2,10 @@
 
 using namespace std;
 
-int main() { cout << "Running main..." << endl; }
+#include "ui/mainscreen.h"
+
+int main() {
+	MainScreen main;
+	main.interact(cin, cout);
+	cout << "Running main..." << endl;
+}

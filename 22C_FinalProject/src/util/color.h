@@ -60,7 +60,10 @@ enum COLOR {
 	BRIGHT_MAGENTA,
 	BRIGHT_CYAN,
 	BRIGHT_GRAY,
-	RESET
+	RESET,
+	SUCCESS = BRIGHT_GREEN,
+	WARNING = YELLOW,
+	ERROR = RED
 };
 
 class Color {
@@ -75,10 +78,10 @@ private:
 
 public:
 	// create with setColor(RESET) to reset
-	Color(COLOR foreground, COLOR background = BLACK) : foreground(foreground), background(background){}
+	Color(COLOR foreground, COLOR background = BLACK)
+			: foreground(foreground), background(background) {}
 
 	friend std::ostream &operator<<(std::ostream &out, const Color &color);
-
 };
 
 #endif // COLORS_H
