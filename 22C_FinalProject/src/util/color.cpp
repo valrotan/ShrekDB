@@ -26,12 +26,9 @@ static const int ANSI_COLORS[] = {30, //
 
 std::ostream &operator<<(std::ostream &out, const Color &color) {
 #ifndef __APPLE__
-	if ((foreground % 16) == (background % 16))
-		foreground++;
-	foreground %= 16;
-	background %= 16;
 	unsigned short wAttributes =
-			((unsigned)background << 4) | (unsigned)foreground;
+			((unsigned)WINDOWS_COLORS[color.background] << 4) |
+			(unsigned)WINDOWS_COLORS[color.foreground];
 	HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 	SetConsoleTextAttribute(hStdOut, wAttributes);
