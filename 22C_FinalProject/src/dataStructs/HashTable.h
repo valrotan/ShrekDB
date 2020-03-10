@@ -25,7 +25,8 @@ public:
 	HashTable(int, const Comparator<T>&, const Hasher<K>&);
 	~HashTable();
 	bool insert(K, T);
-	bool remove(K);
+	bool contains(K);
+	T remove(K);
 	T find(K);
 };
 
@@ -85,13 +86,12 @@ bool HashTable<K, T>::insert(K k, T data) {
 
 
 template <typename K, typename T>
-bool HashTable<K, T>::remove(K k) {
+T HashTable<K, T>::remove(K k) {
 	long key = hasher->hash(k, this->size);
-	LinkedList<const HashtableUnit<K, T>*>* l = table[k];
+	LinkedList<const HashtableUnit<K, T>*>* l = table[key];
 
 	for (int i = 0; i < l->getCount(); i++) {
-		if ((l->getData(i))->getKey() == key) {
-			l->remove(i);
+		if (comparator->compare(l->getData(i)->getKey(), k) == 0) {
 			if (l->getCount() <= 0)
 				load--;
 			else {
@@ -99,7 +99,7 @@ bool HashTable<K, T>::remove(K k) {
 					maxList = l->getCount();
 			}
 			numNodes--;
-			return true;
+			return l->remove(i)->getData();
 		}
 	};
 	return false;
@@ -112,6 +112,18 @@ T HashTable<K, T>::find(K k) {
 	for (int i = 0; i < l->getCount(); i++) {
 		if (comparator->compare(l->getData(i)->getKey(),k) == 0) {
 			return l->getData(i)->getData();
+		}
+	};
+	return false;
+}
+
+template <typename K, typename T>
+bool HashTable<K, T>::contains(K k) {
+	long key = hasher->hash(k, this->size);
+	LinkedList<const HashtableUnit<K, T>*>* l = table[key];
+	for (int i = 0; i < l->getCount(); i++) {
+		if (comparator->compare(l->getData(i)->getKey(), k) == 0) {
+			return true;
 		}
 	};
 	return false;

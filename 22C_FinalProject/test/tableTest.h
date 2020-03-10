@@ -21,8 +21,15 @@ void runTableTests() {
 
 	Character* c = table.find("Fiona");
 	cout << *c << endl;
-	table.find("Shrek");
-	table.find("Donkey");
+
+	table.remove("Fiona");
+	
+	c = table.find("Fiona");
+	if(!c)
+		cout << "Deleted" << endl;
+
+	/*table.find("Shrek");
+	table.find("Donkey");*/
 	//table.insert("one", 50);
 	//table.insert("two", 600000000);
 	//table.insert("three", -10000);
