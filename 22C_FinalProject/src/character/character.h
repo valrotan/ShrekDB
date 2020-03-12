@@ -67,6 +67,9 @@ public:
 						int age = 0);
 
 	static std::string getTableHeader();
+	static std::string getDBHeader() {
+		return "id	name	species	sex	occupation	color	age	size	mass	bmi";
+	}
 
 	friend bool operator==(Character &a, Character &b);
 

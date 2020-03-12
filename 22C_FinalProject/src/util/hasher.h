@@ -14,7 +14,7 @@ class IntegerHasher : public Hasher<int> {
 public:
 	~IntegerHasher() {}
 	long hash(int k, const int size) override {
-		long key = k * k * k;
+		unsigned long key = k * k * k;
 		return key % size;
 	} 
 
@@ -37,7 +37,7 @@ public:
 	~StringHasher() {}
 	long hash(std::string k, const int size) override {
 		int kk = getSumChars(k);
-		long key = kk * kk * kk;
+		unsigned long key = kk * kk * kk;
 		return key % size;
 	}
 	StringHasher* clone() const override {

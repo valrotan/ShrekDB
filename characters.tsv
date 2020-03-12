@@ -1,0 +1,52 @@
+Id	character	species	sex	Occupation	color	age	size	mass	bmi
+1	Big Bad Wolf	wolf	male	homeless	gray	7	1.5	70	31.11
+2	Captain Hook	human	male	pianist	white	58	1.7	75	25.95
+3	Cinderella	human	female	princess	white	19	1.6	55	21.48
+4	Cyclops	cyclop	male	bouncer	white	41	1.9	90	24.93
+5	Cyclops Girl	cyclop	female	child	white	8	1.2	49	34.03
+6	Donkey	donkey	male organism	hero	gray	10	1.5	100	44.44
+7	Doris the Ugly Stepsister	human	female	bartender	white	40	1.79	79	24.66
+8	Dragon	dragon	female organism	guardian	purple	330	19.33	7000	18.73
+9	Dronkeys	dronkeys	varies	children	gray	1	1.1	70	57.85
+10	Fairy Godmother	fairy	female	villain	white	63	1.6	66	25.78
+11	Farkle	ogre	male	child	green	1	1.2	49	34.03
+12	Felicia	ogre	female	child	green	1	1.2	49	34.03
+13	Fergus	ogre	male	child	green	1	1.2	49	34.03
+14	Fifi	goose	female	guardian	white	6	1.1	18	14.88
+15	Frog King Harold	frog	male	king	green	64	0.15	0.025	1.11
+16	Ginger Bread Man	ginger bread	male	prisoner	brown	2	0.16	0.085	3.32
+17	Golden Goose	goose	female	egglayer	golden	0.4	1.5	40	17.78
+18	Great Terror	goose	female	egglayer	white	97	30.5	2000	2.15
+19	Headless Horseman	undead	male	knight	n/a	55	1.75	100	32.65
+20	Humpty Dumpty	egg	male	unknown	white	23	1.44	22	10.61
+21	Jack	human	male	robber	white	51	2	134	33.50
+22	Jill	human	female	robber	white	50	1.9	125	34.63
+23	King Arthur Pendragon	human	male	student	white	18	1.72	74	25.01
+24	King Harold	human	male	king	white	64	1.76	84	27.12
+25	Kitty Softpaws	cat	female	thief	black	9	0.45	6	29.63
+26	Lord Farquaad	human	male	lord	white	43	1.4	49	25.00
+27	Mabel the Ugly Stepsister	human	female	bartender	white	41	1.65	68	24.98
+28	Magic Mirror	mirror	male	furniture	gray	88	1	36	36.00
+29	Merlin	human	male	wizard	white	78	1.45	55	26.16
+30	Monsieur Hood	human	male	highwayman 	white	29	1.7	71	24.57
+31	Peter Pan	fairy	male	child	white	204	0.1	0.02	2.00
+32	Pinocchio	puppet	male	liar	brown	15	1.35	4.18	2.29
+33	Prince Charming	human	male	actor	white	32	1.83	81	24.19
+34	Princess Fiona	ogre	female	princess	green	30	1.73	82	27.40
+35	Puss in Boots	cat	male	mercenary	orange	10	0.5	8.5	34.00
+36	Queen Lillian	human	female	queen	white	48	1.65	52	19.10
+37	Rapunzel	human	female	princess	white	18	1.56	47	19.31
+38	Rumpelstiltskin	human	male	deal maker	white	38	1.3	46	27.22
+39	Seven Dwarfs	human	male	miners	white	44	0.97	52	55.27
+40	Shrek	ogre	male	God	green	30	2.2	161.5	33.37
+41	Sir Lancelot	human	male	student	white	20	1.81	78.5	23.96
+42	Sleeping Beauty	human	female	princess	white	19	1.64	51.5	19.15
+43	Snow White	human	female	princess	white	19	1.61	51	19.68
+44	The Evil Queen	human	female	former queen	white	36	1.74	60	19.82
+45	The Evil Trees	tree	tree	musclemen	brown	250	4.5	400	19.75
+46	The Pied Piper	human	male	rat charmer	white	40	1.65	55	20.20
+47	Thelonious	human	male	executioner	white	51	1.85	95	27.76
+48	Three Blind Mice	mouse	male	unemplyed	white	2	0.07	0.025	5.10
+49	Three Little Pigs	pig	male	unemplyed	pink	14	1.08	62	53.16
+50	Tinker Bell	fairy	female	unemplyed	white	182	0.08	0.012	1.88
+51	Witches	human	female	musclemen	white	64	1.55	45	18.73

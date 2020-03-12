@@ -114,7 +114,7 @@ T HashTable<K, T>::find(K k) {
 			return l->getData(i)->getData();
 		}
 	};
-	return false;
+	throw "Expection: element not found";
 }
 
 template <typename K, typename T>

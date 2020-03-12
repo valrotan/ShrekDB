@@ -46,8 +46,10 @@ std::ostream &operator<<(std::ostream &out, const Character &c) {
 				<< c.occupation << "\t" //
 				<< c.color << "\t"      //
 				<< c.age << "\t"        //
+				<< c.height << "\t"     //
 				<< c.mass << "\t"       //
-				<< c.height << "\n";
+				<< c.bmi;               //
+
 		break;
 	case CHARACTER_STYLE_TABLE: {
 		char buf[512];
@@ -106,8 +108,7 @@ std::istream &operator>>(std::istream &in, Character &c) {
 	std::getline(in, c.occupation, '\t');
 	std::getline(in, c.color, '\t');
 	in >> c.age >> c.height >> c.mass >> c.bmi;
-	// TODO scan relationships
-	in.ignore(256, '\n');
+	//	in.ignore(256, '\n');
 	return in;
 }
 

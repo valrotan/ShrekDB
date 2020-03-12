@@ -17,10 +17,10 @@ void characterTests() {
 	//	Character::setPrintStyle(CHARACTER_STYLE_NAME);
 
 #ifndef __APPLE__
-	fstream dataFile(
-			"C:\\Users\\taras\\Source\\Repos\\valrotan\\22C_FinalProject\\data.tsv");
+	fstream dataFile("C:\\Users\\taras\\Source\\Repos\\valrotan\\22C_"
+									 "FinalProject\\characters.tsv");
 #else
-	fstream dataFile("data.tsv");
+	fstream dataFile("characters.tsv");
 #endif
 	if (!dataFile) {
 		cout << "File can't be opened..." << endl;
@@ -31,7 +31,9 @@ void characterTests() {
 	cout << Character::getTableHeader() << endl;
 	while (!dataFile.eof()) {
 		dataFile >> c;
+		Character::setPrintStyle(CHARACTER_STYLE_TABLE);
 		bst.add(new Character(c));
+		cout << c << endl;
 	}
 
 	Character a, b;

@@ -92,16 +92,17 @@ public:
 		nio = false;
 	}
 
-	void writeChars() {
+	void openWriteChars() {
 		closeWriteChars();
 		charOStream.open(charsPath, std::ios_base::app);
+		charOStream << Character::getDBHeader() << std::endl;
 		coo = true;
 	}
 	Database &operator<<(Character &c) {
 		if (!coo)
 			throw "File not open exception";
 		Character::setPrintStyle(CHARACTER_STYLE_DB);
-		charOStream << c;
+		charOStream << c << std::endl;
 		return *this;
 	}
 	void closeWriteChars() {
