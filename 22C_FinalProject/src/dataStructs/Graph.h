@@ -16,6 +16,8 @@ private:
 	LinkedList<const GraphNode<T> *> *nodes;
 	LinkedList<const GraphEdge<T> *> *edges;
 
+	Comparator<T> *dataComparator;
+
 public:
 	Graph();
 	Graph(const Comparator<T> &dataComparator);
@@ -38,6 +40,7 @@ public:
 	void addEdge(const T &a, const T &b, bool positive = false);
 	void removeEdge(const T &a, const T &b);
 	void removeEdgeByIndex(int index);
+	void removeEdgesWithNode(const T &a);
 	bool containsEdge(const T &a, const T &b);
 	int findEdge(const T &a, const T &b);
 
@@ -64,6 +67,8 @@ Graph<T>::Graph() {
 
 template <typename T>
 Graph<T>::Graph(const Comparator<T> &dataComparator) {
+	this->dataComparator = dataComparator.clone();
+
 	std::cout << "creating comparators\n";
 	GraphNodePointerComparator<T> nodeComparator(dataComparator);
 	GraphEdgePointerComparator<T> edgeComparator(dataComparator);
@@ -88,6 +93,7 @@ template <typename T>
 T Graph<T>::removeNode(const T &data) {
 	GraphNode<T> temp(data);
 	int nodeInd = nodes->find(&temp);
+	removeEdgesWithNode(data);
 	return removeNodeByIndex(nodeInd);
 }
 
@@ -147,6 +153,17 @@ void Graph<T>::removeEdgeByIndex(int index) {
 		throw "Graph: edge index out of bounds.";
 	const GraphEdge<T> *removed = edges->remove(index);
 	delete removed;
+}
+
+template <typename T>
+void Graph<T>::removeEdgesWithNode(const T &a) {
+	for (int i = edges->getCount() - 1; i >= 0; i--) {
+		const GraphEdge<T> *temp = edges->getData(i);
+		if (dataComparator->compare(temp->getA()->getData(), a) == 0 ||
+				dataComparator->compare(temp->getB()->getData(), a) == 0) {
+			removeEdgeByIndex(i);
+		}
+	}
 }
 
 template <typename T>
@@ -217,8 +234,8 @@ std::ostream &operator<<(std::ostream &out, Graph<T> &g) {
 	for (int i = 0; i < g.nodes->getCount(); i++) {
 		std::stringstream s;
 		s << g.getNodeByIndex(i);
-		out << std::setw(20) << s.str().substr(0, 18)
-				<< Color(WHITE, static_cast<COLOR>(i % 6 + 3)) << " " << Color(RESET)
+		out << std::setw(20) << s.str().substr(0, 18) << " "
+				<< Color(WHITE, static_cast<COLOR>(i % rows + 3)) << " " << Color(RESET)
 				<< "|";
 		for (int j = 0; j < g.nodes->getCount(); j++) {
 			if (g.containsEdge(g.getNodeByIndex(i), g.getNodeByIndex(j))) {
@@ -237,19 +254,21 @@ std::ostream &operator<<(std::ostream &out, Graph<T> &g) {
 		out << std::endl;
 	}
 
-	//	out << std::setw(14);
-	//	for (int i = 0; i < g.nodes->getCount() + 1; i++) {
-	//		out << "--";
-	//	}
-	//	out << std::endl;
+	out << std::setw(23) << " ";
+	for (int i = 0; i < g.nodes->getCount(); i++) {
+		out << Color(WHITE, static_cast<COLOR>(i % rows + 3)) << " "
+				<< Color(BLACK, GRAY) << " ";
+	}
+	out << Color(RESET) << std::endl;
 
 	for (int i = 0; i < rows; i++) {
-		out << std::setw(22 + i * 2) << " ";
+		out << std::setw(23 + i * 2) << " ";
 		for (int j = i; j < g.countNodes(); j += rows) {
 			T el = g.getNodeByIndex(j);
 			std::stringstream s;
 			s << el;
-			out << Color(WHITE, static_cast<COLOR>(i % 6 + 3)) << " " << Color(RESET);
+			out << Color(WHITE, static_cast<COLOR>(i % rows + 3)) << " "
+					<< Color(RESET);
 
 			int k;
 			for (k = 0; k < s.str().length() && k < rows * 2 - 2; k++)

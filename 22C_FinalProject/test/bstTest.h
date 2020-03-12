@@ -10,7 +10,7 @@ using namespace std;
 void runBSTTests() {
 	cout << "running bst tests...\n";
 
-	CharacterPointerComparator ccmp(CHARACTER_MASS);
+	CharacterPointerComparator ccmp(CHARACTER_OCCUPATION);
 
 	Character a, b;
 	a.setName("a");
@@ -29,7 +29,6 @@ void runBSTTests() {
 	bst.setOrder(BST_INORDER);
 	cout << "BST\n";
 
-	Character::setPrintStyle(CHARACTER_STYLE_NAME);
 	cout << bst << endl;
 
 	BST<int> bs;
@@ -63,6 +62,22 @@ void runBSTTests() {
 	cout << "tree nElems: " << bs.count() << endl;
 
 	cout << "tree contains 4: " << bs.contains(4) << endl;
+
+	cout << "\n\n\n";
+
+	bs.empty();
+	bs.add(5);
+	bs.add(3);
+	bs.add(2);
+	bs.add(7);
+	bs.add(6);
+	bs.add(8);
+	bs.add(9);
+	bs.add(10);
+
+	Character::setPrintStyle(CHARACTER_STYLE_OCCUPATION);
+	bs.setOrder(BST_PRETTY_PREORDER);
+	cout << bs;
 }
 
 #endif // BSTTEST_H

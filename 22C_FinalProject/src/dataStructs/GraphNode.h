@@ -22,15 +22,14 @@ public:
 
 	// these are not to be used. Use comparators instead
 	friend bool operator==(const GraphNode<T> &a, const GraphNode<T> &b) {
-		std::cout << "PANIC" << std::endl;
 		return a.data == b.data;
 	}
 
 	friend bool operator>(const GraphNode<T> &a, const GraphNode<T> &b) {
-		return false;
+		return true; // ok as long as not ==
 	}
 	friend bool operator<(const GraphNode<T> &a, const GraphNode<T> &b) {
-		return false;
+		return true; // ok as long as not ==
 	}
 
 	friend std::ostream &operator<<(std::ostream &out, const GraphNode<T> &n) {

@@ -4,6 +4,7 @@
 #include "BST_Node.h"
 #include "LinkedList.h"
 #include "Queue.h"
+#include <iomanip>
 #include <iostream>
 #include <string>
 
@@ -11,7 +12,10 @@ enum BST_TRAVERSAL {
 	BST_BREADTH_FIRST = 0,
 	BST_PREORDER,
 	BST_INORDER,
-	BST_POSTORDER
+	BST_POSTORDER,
+	BST_PRETTY_BREADTH_FIRST,
+	BST_PRETTY_INORDER,
+	BST_PRETTY_PREORDER
 };
 
 template <typename T>
@@ -32,11 +36,16 @@ private:
 	BST_Node<T> *searchHelper(BST_Node<T> *root, const T &key, int &nOps);
 	BST_Node<T> *removeHelper(BST_Node<T> *root, const T &key);
 	int count(BST_Node<T> *node);
+	int maxHeight(BST_Node<T> *node);
 
 	void emptyHelper(BST_Node<T> *node);
 	void preOrderTravHelper(BST_Node<T> *root, std::ostream &out);
 	void inOrderTravHelper(BST_Node<T> *root, std::ostream &out);
 	void postOrderTravHelper(BST_Node<T> *root, std::ostream &out);
+	void prettyBreadthFirst(BST_Node<T> *root, std::ostream &out);
+	void prettyInorder(BST_Node<T> *root, std::ostream &out, int h = 0);
+	void prettyPreorder(BST_Node<T> *root, std::ostream &out,
+											std::string prefix = "");
 
 public:
 	BST(const T &data);
@@ -124,6 +133,16 @@ template <typename T>
 BST<T>::~BST() {
 	empty();
 	delete comparator;
+}
+
+template <typename T>
+int BST<T>::maxHeight(BST_Node<T> *node) {
+	if (!node) {
+		return -1;
+	}
+	int lH = 1 + maxHeight(node->left);
+	int rH = 1 + maxHeight(node->right);
+	return rH > lH ? rH : lH;
 }
 
 template <typename T>
@@ -386,6 +405,96 @@ void BST<T>::postOrderTravHelper(BST_Node<T> *root, std::ostream &out) {
 	out << root->data << std::endl;
 }
 
+template <typename T>
+void BST<T>::prettyInorder(BST_Node<T> *root, std::ostream &out, int h) {
+	if (!root)
+		return;
+	prettyInorder(root->left, out, h + 1);
+	out << std::setw(2 * h + 2) << "" << root->data << std::endl;
+	prettyInorder(root->right, out, h + 1);
+}
+
+template <typename T>
+void BST<T>::prettyPreorder(BST_Node<T> *root, std::ostream &out,
+														std::string prefix) {
+
+	if (!root) {
+		return;
+	}
+
+	bool hasLeft = (root->left);
+	bool hasRight = (root->right);
+
+	if (!hasLeft && !hasRight) {
+		return;
+	}
+
+	out << prefix;
+	out << ((hasLeft && hasRight) ? "├── " : "");
+	out << ((!hasLeft && hasRight) ? "└── " : "");
+
+	if (hasRight) {
+		bool printStrand =
+				(hasLeft && hasRight && (root->right->right || root->right->left));
+		std::string newPrefix = prefix + (printStrand ? "│   " : "    ");
+		out << root->right->data << std::endl;
+		prettyPreorder(root->right, out, newPrefix);
+	}
+
+	if (hasLeft) {
+		out << (hasRight ? prefix : "") << "└── " << root->left->data << std::endl;
+		prettyPreorder(root->left, out, prefix + "    ");
+	}
+}
+
+template <typename T>
+void BST<T>::prettyBreadthFirst(BST_Node<T> *root, std::ostream &out) {
+
+	Queue<BST_Node<T> *> queue;
+	queue.enqueue(root);
+
+	int nLeaves = 0, nextLeaves = 1;
+	int h = maxHeight(root) + 1;
+	out << h << "maxh\n";
+
+	while (!queue.isEmpty()) {
+
+		if (nLeaves == 0) {
+			out << std::endl;
+			nLeaves = nextLeaves;
+			nextLeaves = 0;
+			h--;
+			for (int i = 0; i < h * (h - 1) + 1 && h != 0; i++) {
+				out << "_ ";
+			}
+		}
+
+		BST_Node<T> *root = queue.dequeue();
+		nLeaves--;
+		if (h > 0) {
+			nextLeaves += 2;
+			if (root) {
+				out << root->data << " ";
+				queue.enqueue(root->left);
+				queue.enqueue(root->right);
+			} else {
+				out << "x ";
+				queue.enqueue(nullptr);
+				queue.enqueue(nullptr);
+			}
+		} else { // h == 0
+			if (root) {
+				out << root->data << " ";
+			} else {
+				out << "x ";
+			}
+		}
+		for (int i = 0; i < h * (h + 1) + 1 && h >= 0; i++) {
+			out << "_ ";
+		}
+	}
+}
+
 template <typename U>
 std::ostream &operator<<(std::ostream &out, BST<U> &bst) {
 	switch (bst.traversalOrder) {
@@ -400,6 +509,16 @@ std::ostream &operator<<(std::ostream &out, BST<U> &bst) {
 		break;
 	case BST_POSTORDER:
 		bst.postOrderTravHelper(bst.root, out);
+		break;
+	case BST_PRETTY_BREADTH_FIRST:
+		bst.prettyBreadthFirst(bst.root, out);
+		break;
+	case BST_PRETTY_INORDER:
+		bst.prettyInorder(bst.root, out);
+		break;
+	case BST_PRETTY_PREORDER:
+		out << bst.root->getData() << std::endl;
+		bst.prettyPreorder(bst.root, out);
 		break;
 	}
 	return out;

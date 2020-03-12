@@ -15,7 +15,8 @@ public:
 };
 
 template <typename T>
-class GenericComparator : public Comparator<T> { // anonymous generic comparator
+class GenericComparator : public Comparator<T> { // generic comparator
+public:
 	int compare(const T &a, const T &b) override;
 
 	GenericComparator<T> *clone() const override {

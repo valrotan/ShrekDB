@@ -11,16 +11,25 @@ using namespace std;
 void utilTest() {
 	cout << "running util tests...\n";
 
-	Character *c1 = new Character(4, "john doe", "dog", "male", "c teacher",
+	Character *c1 = new Character(1, "john doe", "dog", "male", "c teacher",
 																"orange", 1.34, 34, 0, 4);
-	Character *c2 = new Character(4, "john d", "dog", "male", "c teacher",
+	Character *c2 = new Character(2, "john d", "dog", "male", "c teacher",
 																"orange", 1.34, 34, 0, 4);
-	CharacterPointerComparator cpc(CHARACTER_ID);
+	CharacterPointerComparator cpc(CHARACTER_NAME);
 	GraphNodePointerComparator<Character *> gnpc(cpc);
 
 	GraphNode<Character *> *a = new GraphNode<Character *>(c1);
 	GraphNode<Character *> *b = new GraphNode<Character *>(c2);
 	cout << gnpc.compare(a, b) << endl;
+
+	Graph<Character *> g(cpc);
+	g.addNode(c1);
+	g.addNode(c1);
+	g.addEdge(c1, c2);
+	cout << g.countEdges() << endl;
+	g.removeNode(c2);
+	cout << g.countEdges() << endl;
+
 	delete a;
 	delete b;
 	delete c1;

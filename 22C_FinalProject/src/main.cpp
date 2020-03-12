@@ -7,5 +7,4 @@ using namespace std;
 int main() {
 	MainScreen main;
 	main.interact(cin, cout);
-	cout << "Running main..." << endl;
 }

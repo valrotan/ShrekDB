@@ -1,5 +1,6 @@
 #include "bstTest.h"
 #include "charactertest.h"
+#include "dbtest.h"
 #include "graphTest.h"
 #include "listTest.h"
 #include "utilTest.h"
@@ -9,9 +10,10 @@ using namespace std;
 
 int main() {
 	// cout << "Running tests..." << endl;
-	// characterTests();
+	//	characterTests();
 	//	runListTests();
-	runBSTTests();
+	//	runBSTTests();
 	//	runGraphTests();
 	//	runUtilTests();
+	dbtests();
 }

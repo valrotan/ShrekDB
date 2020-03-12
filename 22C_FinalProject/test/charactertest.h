@@ -2,6 +2,7 @@
 #define CHARACTERTEST_H
 
 #include "../src/character/character.h"
+#include "../src/dataStructs/BST.h"
 #include <fstream>
 #include <iostream>
 
@@ -10,6 +11,10 @@ using namespace std;
 void characterTests() {
 
 	cout << "## character tests\n";
+
+	CharacterPointerComparator ccmp(CHARACTER_OCCUPATION);
+	BST<Character *> bst(ccmp);
+	//	Character::setPrintStyle(CHARACTER_STYLE_NAME);
 
 #ifndef __APPLE__
 	fstream dataFile(
@@ -26,7 +31,7 @@ void characterTests() {
 	cout << Character::getTableHeader() << endl;
 	while (!dataFile.eof()) {
 		dataFile >> c;
-		cout << c << endl;
+		bst.add(new Character(c));
 	}
 
 	Character a, b;
@@ -65,6 +70,10 @@ void characterTests() {
 	if (pcmpByHeight.compare(&a, &b) != 0) {
 		cout << "ERROR IN COMPARATOR BY HEIGHT\n";
 	}
+
+	bst.setOrder(BST_PRETTY_PREORDER);
+	Character::setPrintStyle(CHARACTER_STYLE_OCCUPATION);
+	cout << bst;
 }
 
 #endif

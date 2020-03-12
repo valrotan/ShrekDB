@@ -38,7 +38,16 @@ bool operator==(Character &a, Character &b) {
 
 std::ostream &operator<<(std::ostream &out, const Character &c) {
 	switch (Character::printStyle) {
-	case CHARACTER_STYLE_ENTRY:
+	case CHARACTER_STYLE_DB:
+		out << c.id << "\t"         //
+				<< c.name << "\t"       //
+				<< c.species << "\t"    //
+				<< c.gender << "\t"     //
+				<< c.occupation << "\t" //
+				<< c.color << "\t"      //
+				<< c.age << "\t"        //
+				<< c.mass << "\t"       //
+				<< c.height << "\n";
 		break;
 	case CHARACTER_STYLE_TABLE: {
 		char buf[512];
