@@ -44,8 +44,7 @@ void graphTest() {
 
 // read characters
 #ifndef __APPLE__
-	fstream dataFile(
-			"C:\\Users\\taras\\Source\\Repos\\valrotan\\22C_FinalProject\\data.tsv");
+	fstream dataFile("C:\\Users\\taras\\source\\repos\\valrotan\\22C_FinalProject\\data.tsv");
 #else
 	fstream dataFile("data.tsv");
 #endif
@@ -67,14 +66,12 @@ void graphTest() {
 
 	// read relationships
 #ifndef __APPLE__
-	fstream posFile("C:\\Users\\taras\\Source\\Repos\\valrotan\\22C_"
-									"FinalProject\\positive.tsv");
-#else
+	fstream posFile("C:\\Users\\taras\\source\\repos\\22C_FinalProject\\positive.tsv");
+#else		
 	ifstream posFile("positive.tsv");
 #endif
 #ifndef __APPLE__
-	fstream negFile("C:\\Users\\taras\\Source\\Repos\\valrotan\\22C_"
-									"FinalProject\\negative.tsv");
+	fstream negFile("C:\\Users\\taras\\source\\repos\\22C_FinalProject\\negative.tsv");
 #else
 	ifstream negFile("negative.tsv");
 #endif

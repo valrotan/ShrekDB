@@ -15,9 +15,9 @@ void MainScreen::interact(std::istream &in, std::ostream &out) {
 
 		out << "Please select an option from the menu below: \n"
 					 "  [1] Add new data \n"
-					 "  [2] Deletedata \n"
-					 "  [3] Search and display datausing the primary key \n"
-					 "  [4] List data in hash tablesequence \n"
+					 "  [2] Delete data \n"
+					 "  [3] Search and display data using the primary key \n"
+					 "  [4] List data in hash table sequence \n"
 					 "  [5] List data in sorted key sequence \n"
 					 "  [6] Print indented tree \n"
 					 "  [7] Efficiency \n"
@@ -51,7 +51,7 @@ void MainScreen::interact(std::istream &in, std::ostream &out) {
 
 			break;
 		default:
-			out << Color(ERROR)
+			out << Color(_ERROR)
 					<< "Invalid option. Please press any button and try again. \n"
 					<< Color(RESET);
 			std::string buf;
