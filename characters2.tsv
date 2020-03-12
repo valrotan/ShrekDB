@@ -16,7 +16,7 @@ id	name	species	sex	occupation	color	age	size	mass	bmi
 15	Frog King Harold	frog	male	king	green	64	0.15	0.025	1.11
 16	Ginger Bread Man	ginger bread	male	prisoner	brown	2	0.16	0.085	3.32
 17	Golden Goose	goose	female	egglayer	golden	0	0.4	1.5	40
-17	Great Terror	goose	female	egglayer	white	97	30.5	2000	2.15
+18	Great Terror	goose	female	egglayer	white	97	30.5	2000	2.15
 19	Headless Horseman	undead	male	knight	n/a	55	1.75	100	32.65
 20	Humpty Dumpty	egg	male	unknown	white	23	1.44	22	10.61
 21	Jack	human	male	robber	white	51	2	134	33.5
