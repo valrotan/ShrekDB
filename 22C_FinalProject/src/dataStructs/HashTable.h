@@ -40,8 +40,6 @@ public:
 	T find(K);
 
 	void clear();
-
-	T operator [](int index);
 	
 	template<typename U, typename V>
 	friend std::ostream& operator << (std::ostream&, HashTable<U, V>&);
@@ -83,7 +81,15 @@ HashTable<K, T>::HashTable(int s, const Comparator<T>& comp, const Hasher<K>& h)
 
 template <typename K, typename T>
 HashTable<K, T>::~HashTable() {
-
+	delete hasher;
+	delete comparator;
+	for (int i = 0; i < this->size; i++) {
+		LinkedList<const HashtableUnit<K, T>*>* l = this->table[i];
+		for (int j = 0; j < l->getCount(); j++) {
+			 delete l->getData(j);
+		}
+		delete l;
+	}
 }
 
 template <typename K, typename T>
@@ -147,14 +153,16 @@ bool HashTable<K, T>::contains(K k) {
 }
 
 template <typename K, typename T>
-T HashTable<K, T>::operator [](int index) {
-	LinkedList<const HashtableUnit<K, T>*>* l = table[key];
-	for (int i = 0; i < l->getCount(); i++) {
-		if (comparator->compare(l->getData(i)->getKey(), k) == 0) {
-			return l->getData(i)->getData();
+void HashTable<K, T>::clear() {
+	for (int i = 0; i < this->size; i++) {
+		LinkedList<const HashtableUnit<K, T>*>* l = this->table[i];
+		for (int j = 0; j < l->getCount(); j++) {
+			delete l->getData(j);
 		}
-	};
-}
+		l->emptyList();
+	}
+ }
+
 
 template<typename K, typename T>
 std::ostream& operator << (std::ostream& out, HashTable<K, T>& hashtable) {

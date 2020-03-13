@@ -20,13 +20,28 @@ void runTableTests() {
 	table.insert("Donkey", donkey);
 
 	Character* c = table.find("Fiona");
-	cout << *c << endl;
+	//cout << *c << endl;
+
+	cout << table;
 
 	table.remove("Fiona");
 	
-	c = table.find("Fiona");
-	if(!c)
-		cout << "Deleted" << endl;
+	try {
+		c = table.find("Fiona");
+
+		if (!c)
+			cout << "Deleted" << endl;
+	}
+	catch (...) {
+	
+	}
+
+	cout << endl << table;
+
+	table.clear();
+
+	cout << endl << table;
+
 
 	/*table.find("Shrek");
 	table.find("Donkey");*/
