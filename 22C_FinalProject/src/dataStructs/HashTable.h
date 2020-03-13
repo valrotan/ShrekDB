@@ -24,10 +24,27 @@ public:
 	HashTable(int, const Hasher<K>&);
 	HashTable(int, const Comparator<T>&, const Hasher<K>&);
 	~HashTable();
+
+	// getters/setters
+	int getCount() { return load; }
+	int getSize() { return size; }
+	double getLoad() { return (double)load / size; }
+	int getMaxListSize() { return maxList; }
+	int getNumNodes() { return numNodes; }
+	int getAverageNumNodes(){ return avgNumNodes; }
+
+
 	bool insert(K, T);
 	bool contains(K);
 	T remove(K);
 	T find(K);
+
+	void clear();
+
+	T operator [](int index);
+	
+	template<typename U, typename V>
+	friend std::ostream& operator << (std::ostream&, HashTable<U, V>&);
 };
 
 template <typename K, typename T>
@@ -127,4 +144,27 @@ bool HashTable<K, T>::contains(K k) {
 		}
 	};
 	return false;
+}
+
+template <typename K, typename T>
+T HashTable<K, T>::operator [](int index) {
+	LinkedList<const HashtableUnit<K, T>*>* l = table[key];
+	for (int i = 0; i < l->getCount(); i++) {
+		if (comparator->compare(l->getData(i)->getKey(), k) == 0) {
+			return l->getData(i)->getData();
+		}
+	};
+}
+
+template<typename K, typename T>
+std::ostream& operator << (std::ostream& out, HashTable<K, T>& hashtable) {
+	for (int i = 0; i < hashtable.size; i++) {
+		LinkedList<const HashtableUnit<K, T>*>* l = hashtable.table[i];
+		out << "Bucket " << i << ": " << std::endl;
+		for (int j = 0; j < l->getCount(); j++) {
+			out << "\t" << l->getData(j)->getData() << std::endl;
+		}
+	}
+	
+	return out;
 }

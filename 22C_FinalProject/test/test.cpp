@@ -4,6 +4,7 @@
 #include "graphTest.h"
 #include "listTest.h"
 #include "utilTest.h"
+#include "hashTest.h"
 
 #include <iostream>
 using namespace std;
@@ -15,5 +16,6 @@ int main() {
 	//	runBSTTests();
 	//	runGraphTests();
 	//	runUtilTests();
-	dbtests();
+	runHashTests();
+	//dbtests();
 }
