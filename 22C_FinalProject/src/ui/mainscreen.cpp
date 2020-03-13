@@ -44,16 +44,16 @@ void MainScreen::interact() {
 	while (!done) {
 
 		out << "Please select an option from the menu below: \n"
-					 "  [1] Add new data \n"
-					 "  [2] Delete data \n"
-					 "  [3] Search and display data using the primary key \n"
+					 " x [1] Add new data \n"
+					 " x [2] Delete data \n"
+					 " x [3] Search and display data using the primary key \n"
 					 "  [4] List data in hash table sequence \n"
 					 "  [5] List data in sorted key sequence \n"
-					 "  [6] Print indented tree \n"
-					 "  [7] Print pretty graph \n"
+					 " x [6] Print indented tree \n"
+					 " x [7] Print pretty graph \n"
 					 "  [7] Efficiency \n"
 					 "  [8] <Team choice menu option> \n"
-					 "  [9] Quit \n"
+					 " x [9] Quit \n"
 					 "> ";
 
 		in >> option;
