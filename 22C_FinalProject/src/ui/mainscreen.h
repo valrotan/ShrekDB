@@ -9,6 +9,7 @@
 class MainScreen : Interactive {
 private:
 	HashTable<std::string, Character *> *table;
+	HashTable<int, Character *> *idTable;
 	LinkedList<Character *> *list;
 	BST<Character *> *bst;
 	Graph<Character *> *graph;
@@ -20,8 +21,8 @@ private:
 	const std::string negPath = "negative.tsv";
 
 	void loadData();
-	void clearData();
 	void writeData();
+	void findData();
 	void addData();
 	void removeData();
 

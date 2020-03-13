@@ -4,6 +4,10 @@
 
 CHARACTER_STYLE Character::printStyle = CHARACTER_STYLE_TABLE;
 
+int Character::getId() const { return id; }
+
+void Character::setId(int value) { id = value; }
+
 Character::Character(int id,                 //
 										 std::string name,       //
 										 std::string species,    //
@@ -24,7 +28,7 @@ std::string Character::getTableHeader() {
 				 "  MASS | HEIGHT |    BMI ";
 }
 
-bool operator==(Character &a, Character &b) {
+bool operator==(const Character &a, const Character &b) {
 	return a.id == b.id &&                 //
 				 a.name == b.name &&             //
 				 a.species == b.species &&       //
@@ -61,6 +65,24 @@ std::ostream &operator<<(std::ostream &out, const Character &c) {
 						c.bmi);
 		out << buf;
 	} break;
+	case CHARACTER_STYLE_SINGLE:
+		char buf[512];
+		sprintf(buf,
+						"ID:           %04d \n"
+						"NAME:         %s \n"
+						"SPECIES:      %s \n"
+						"GENDER:       %s \n"
+						"OCCUPATION:   %s \n"
+						"COLOR:        %s \n"
+						"AGE           %d  \n"
+						"MASS          %6.1f \n"
+						"HEIGHT        %6.1f \n"
+						"BMI:          %6.1f \n",
+						c.id, c.name.c_str(), c.species.c_str(), c.gender.c_str(),
+						c.occupation.c_str(), c.color.c_str(), c.age, c.mass, c.height,
+						c.bmi);
+		out << buf;
+		break;
 	case CHARACTER_STYLE_ID:
 		out << c.id;
 		break;
@@ -190,6 +212,11 @@ int CharacterComparator::compare(const Character &a, const Character &b) {
 			return 0;
 	case CHARACTER_AGE:
 		return a.age - b.age;
+	case CHARACTER_ALL:
+		if (a == b) {
+			return 0;
+		}
+		return 1;
 	}
 }
 

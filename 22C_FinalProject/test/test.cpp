@@ -13,7 +13,7 @@ int main() {
 	//	characterTests();
 	//	runListTests();
 	//	runBSTTests();
-	//	runGraphTests();
+	runGraphTests();
 	//	runUtilTests();
-	dbtests();
+	//	dbtests();
 }

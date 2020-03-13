@@ -8,6 +8,7 @@ MainScreen::MainScreen(std::istream &tin, std::ostream &tout)
 
 	try {
 		table = new HashTable<std::string, Character *>(StringHasher());
+		idTable = new HashTable<int, Character *>(IntegerHasher());
 		list = new LinkedList<Character *>(
 				CharacterPointerComparator(CHARACTER_COLOR));
 		bst =
@@ -59,10 +60,13 @@ void MainScreen::interact() {
 
 		switch (option) {
 		case 1:
+			addData();
 			break;
 		case 2:
+			removeData();
 			break;
 		case 3:
+			findData();
 			break;
 		case 4:
 			break;
@@ -105,20 +109,23 @@ void MainScreen::loadData() {
 	while (c->getName() != "") {
 		list->add(c);
 		table->insert(c->getName(), c);
+		idTable->insert(c->getId(), c);
 		bst->add(c);
 		graph->addNode(c);
 
 		c = new Character;
 		*db >> *c;
 	}
+	delete c;
 	db->closeReadChars();
 
 	db->openReadPos();
 	while (!db->doneReadingPos()) {
 		int a, b;
 		db->readPos(a, b);
-		Character tempA(a), tempB(b);
-		graph->addEdge(&tempA, &tempB, true);
+		Character *ca = idTable->find(a);
+		Character *cb = idTable->find(b);
+		graph->addEdge(ca, cb, true);
 	}
 	db->closeReadPos();
 
@@ -126,11 +133,89 @@ void MainScreen::loadData() {
 	while (!db->doneReadingNeg()) {
 		int a, b;
 		db->readNeg(a, b);
-		Character tempA(a), tempB(b);
-		graph->addEdge(&tempA, &tempB);
+		Character *ca = idTable->find(a);
+		Character *cb = idTable->find(b);
+		graph->addEdge(ca, cb);
 	}
 	db->closeReadNeg();
 }
-void MainScreen::clearData() {}
-void MainScreen::addData() {}
-void MainScreen::removeData() {}
+void MainScreen::addData() {
+	out << "Please enter data in the following format, separateed by tabs \n";
+	out << Character::getDBHeader();
+	out << "\n > ";
+	Character *c = new Character;
+	in >> *c;
+
+	list->add(c);
+	table->insert(c->getName(), c);
+	bst->add(c);
+	graph->addNode(c);
+}
+
+void MainScreen::removeData() {
+	out << "Please enter the name of the character to remove. \n> ";
+	std::string name;
+	in.ignore(1024, '\n');
+	getline(in, name);
+	if (!table->contains(name)) {
+		out << Color(_ERROR)
+				<< "Character not found. Please press any button and try again. \n"
+				<< Color(RESET);
+		std::string buf;
+		getline(in, buf);
+		IOUtil::clearScreen();
+		return;
+	}
+	Character *c = table->find(name);
+	Character::setPrintStyle(CHARACTER_STYLE_SINGLE);
+	out << c;
+	out << "Confirm remove?\n [Y/n]: ";
+	char confirm;
+	in >> confirm;
+	if (confirm == 'y' || confirm == 'Y') {
+		table->remove(c->getName());
+		bst->remove(c);
+		graph->removeNode(c);
+		delete list->remove(list->find(c));
+		out << "remove successful\n";
+	} else {
+		out << "cancelled remove \n";
+	}
+}
+
+void MainScreen::findData() {
+	out << "Please enter the name of the character to find. \n> ";
+	std::string name;
+	in.ignore(1024, '\n');
+	getline(in, name);
+	if (!table->contains(name)) {
+		out << Color(_ERROR)
+				<< "Character not found. Please press any button and try again. \n"
+				<< Color(RESET);
+		std::string buf;
+		getline(in, buf);
+		IOUtil::clearScreen();
+		return;
+	}
+	Character::setPrintStyle(CHARACTER_STYLE_SINGLE);
+
+	Character *c = table->find(name);
+	out << "Table result: \n";
+	out << c;
+
+	c = bst->search(c);
+	out << "BST result: \n";
+	out << c;
+
+	c = list->getData(list->find(c));
+	out << "List result: \n";
+	out << c;
+
+	try {
+		c = graph->getNode(c);
+		out << "Graph result: \n";
+		out << c;
+	} catch (const char *e) {
+		out << e << std::endl;
+	}
+}

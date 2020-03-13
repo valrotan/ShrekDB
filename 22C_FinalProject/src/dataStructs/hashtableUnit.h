@@ -13,6 +13,10 @@ public:
 	T getData() const;
 	void setKey(K);
 	void setData(T);
+
+	friend bool operator==(const HashtableUnit<K,T> &a, const HashtableUnit<K,T> &b) {
+		return a.data == b.data;
+	}
 };
 
 

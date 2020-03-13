@@ -102,7 +102,7 @@ T HashTable<K, T>::remove(K k) {
 			return l->remove(i)->getData();
 		}
 	};
-	return false;
+	throw "ExceptionL element not found";
 }
 
 template <typename K, typename T>
@@ -114,7 +114,7 @@ T HashTable<K, T>::find(K k) {
 			return l->getData(i)->getData();
 		}
 	};
-	throw "Expection: element not found";
+	throw "Exception: element not found";
 }
 
 template <typename K, typename T>

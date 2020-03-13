@@ -14,7 +14,7 @@ private:
 	T data;
 
 public:
-	GraphNode(const T &data);
+	GraphNode(const T &data) : data(data) {}
 	GraphNode() {}
 
 	T getData() const;
@@ -43,9 +43,6 @@ public:
 };
 
 template <typename T>
-GraphNode<T>::GraphNode(const T &data) : data(data) {}
-
-template <typename T>
 T GraphNode<T>::getData() const {
 	return data;
 }
@@ -59,6 +56,7 @@ void GraphNode<T>::setData(const T &value) {
 template <typename T>
 class GraphNodeComparator : public Comparator<GraphNode<T>> {
 
+protected:
 	Comparator<T> *dataComparator;
 
 public:
@@ -76,6 +74,9 @@ public:
 	}
 	GraphNodeComparator *clone() const override {
 		return new GraphNodeComparator(*this);
+	}
+	bool strictlyEquals(const GraphNode<T> &a, const GraphNode<T> &b) override {
+		return dataComparator->strictlyEquals(a.getData(), b.getData());
 	}
 };
 
@@ -95,6 +96,11 @@ public:
 
 	virtual GraphNodePointerComparator<T> *clone() const override {
 		return new GraphNodePointerComparator<T>(*this);
+	}
+
+	bool strictlyEquals(const GraphNode<T> *const &a,
+											const GraphNode<T> *const &b) override {
+		return comparator.strictlyEquals(*a, *b);
 	}
 };
 

@@ -76,6 +76,7 @@ Graph<T>::Graph(const Comparator<T> &dataComparator) {
 	std::cout << "creating lists\n";
 	nodes = new LinkedList<const GraphNode<T> *>(nodeComparator);
 	edges = new LinkedList<const GraphEdge<T> *>(edgeComparator);
+	std::cout << "done with constructors\n";
 }
 
 template <typename T>
@@ -109,7 +110,7 @@ T Graph<T>::removeNodeByIndex(int index) {
 
 template <typename T>
 bool Graph<T>::containsNode(const T &data) {
-	return findNode(data) == -1;
+	return findNode(data) != -1;
 }
 
 template <typename T>
@@ -120,7 +121,7 @@ int Graph<T>::findNode(const T &data) {
 
 template <typename T>
 T Graph<T>::getNode(const T &data) {
-	return getNode(findNode(data));
+	return getNodeByIndex(findNode(data));
 }
 
 template <typename T>

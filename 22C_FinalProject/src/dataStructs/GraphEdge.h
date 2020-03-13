@@ -85,9 +85,9 @@ void GraphEdge<T>::setIsPositive(bool value) {
 
 template <typename T>
 bool operator==(const GraphEdge<T> &a, const GraphEdge<T> &b) {
-	if (*a.a == *b.a && *a.b == *b.b && a.isPositive == b.isPositive) {
+	if (*a.a == *b.a && *a.b == *b.b) {
 		return true;
-	} else if (*a.a == *b.b && *a.b == *b.a && a.isPositive == b.isPositive) {
+	} else if (*a.a == *b.b && *a.b == *b.a) {
 		return true;
 	}
 	return false;
@@ -153,6 +153,11 @@ public:
 
 	GraphEdgePointerComparator<T> *clone() const override {
 		return new GraphEdgePointerComparator<T>(*this);
+	}
+
+	bool strictlyEquals(const GraphEdge<T> *const &a,
+											const GraphEdge<T> *const &b) override {
+		return *a == *b;
 	}
 };
 

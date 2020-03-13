@@ -34,7 +34,9 @@ private:
 	BST_Node<T> *findSmallest(BST_Node<T> *root);
 	void addHelper(BST_Node<T> *node, const T &val, int &nOps);
 	BST_Node<T> *searchHelper(BST_Node<T> *root, const T &key, int &nOps);
-	BST_Node<T> *removeHelper(BST_Node<T> *root, const T &key);
+	//	BST_Node<T> *removeHelper(BST_Node<T> *root, const T &key);
+	void removeHelper(BST_Node<T> **root, BST_Node<T> *parent, BST_Node<T> *node,
+										const T &key, bool isLeftChild);
 	int count(BST_Node<T> *node);
 	int maxHeight(BST_Node<T> *node);
 
@@ -210,62 +212,138 @@ void BST<T>::add(const T &data, int &nOps) {
 
 template <typename T>
 T BST<T>::remove(const T &key) {
-	BST_Node<T> *node = removeHelper(this->root, key);
-	if (node)
-		return node->data;
-	else
-		throw "Not found";
+	//	BST_Node<T> *node = removeHelper(this->root, key);
+	//	if (node)
+	//		return node->data;
+	//	else
+	//		throw "Not found";
+	T data = search(key);
+	removeHelper(&root, root, root, key, false);
+	return data;
 }
 
 template <typename T>
-BST_Node<T> *BST<T>::removeHelper(BST_Node<T> *node, const T &key) {
-	if (!node) // if there's no parent, return null
-		return nullptr;
+void BST<T>::removeHelper(BST_Node<T> **root, BST_Node<T> *parent,
+													BST_Node<T> *node, const T &key, bool isLeftChild) {
+	if (node == nullptr) {
+		return;
+	}
+	if (comparator->compare(key, node->data) < 0) {
+		parent = node;
+		node = node->left;
+		removeHelper(root, parent, node, key, true);
+	} else if (comparator->compare(key, node->data) == 0 && // found node
+						 key == node->data) { // go right if not exact match
 
-	if (comparator->compare(key, node->data) < 0)
-		// if key is less than root->data, assign root->left to
-		// the deleted node
-		node->left = removeHelper(node->left, key);
-
-	else if (comparator->compare(key, node->data) > 0)
-		// if more, assign the right child to be the deleted node
-		node->right = removeHelper(node->right, key);
-
-	else { // found the right node
-		if (node == this->root) {
-
-			if (!node->left) { // if no left child, assign temp to left, delete
-												 // current node and return temp
-				this->root = node->right;
-				delete node;
-				return root;
-			} else if (!node->right) {
-				this->root = node->left;
-				delete node;
-				return root;
-			} else {
-				// has both children
-				node->data = findLargest(node->left)->data;
-				node->left = removeHelper(node->left, node->data);
+		if (node == parent) {  // parent and node are same node
+			if (node != *root) { // should not happen
+				throw "error removing node";
+			}
+			if (node->left && node->right) { // delete root node with left and right
+				T lMax = findLargest(node->left)->data;
+				node->data = lMax;
+				removeHelper(root, node, node->left, lMax, true);
+			} else if (node->left) {
+				node = node->left;
+				delete *root;
+				*root = node;
+			} else if (node->right) {
+				node = node->right;
+				delete *root;
+				*root = node;
+			} else { // no more nodes from root
+				delete *root;
+				*root = nullptr; // assume root is always the root of the tree
 			}
 
-		} else if (!node->left) { // if no left child, assign temp to left, delete
-															// current node and return temp
-			BST_Node<T> *temp = node->right;
-			delete node;
-			return temp;
-		} else if (!node->right) {
-			BST_Node<T> *temp = node->left;
-			delete node;
-			return temp;
-		} else {
-			// has both children
-			node->data = findLargest(node->left)->data;
-			node->left = removeHelper(node->left, node->data);
+		} else if (!node->left && !node->right) { // delete leaf node
+
+			if (isLeftChild) {
+				parent->left = nullptr;
+				delete node;
+			} else { // right child
+				parent->right = nullptr;
+				delete node;
+			}
+
+		} else if (isLeftChild) { // left child with children
+
+			if (node->left) { // node has left children
+				T lMax = findLargest(node->left)->data;
+				node->data = lMax;
+				removeHelper(root, node, node->left, lMax, true);
+			} else { // no left children at node
+				parent->left = node->right;
+				delete node;
+			}
+
+		} else { // right child with children
+
+			if (node->right) { // node has left children
+				T lMin = findSmallest(node->right)->data;
+				node->data = lMin;
+				removeHelper(root, node, node->right, lMin, false);
+			} else { // no left children at node
+				parent->right = node->left;
+				delete node;
+			}
 		}
+	} else {
+		parent = node;
+		node = node->right;
+		removeHelper(root, parent, node, key, false);
 	}
-	return node;
 }
+
+// template <typename T>
+// BST_Node<T> *BST<T>::removeHelper(BST_Node<T> *node, const T &key) {
+//	if (!node) // if there's no parent, return null
+//		return nullptr;
+
+//	if (comparator->compare(key, node->data) < 0)
+//		// if key is less than root->data, assign root->left to
+//		// the deleted node
+//		node->left = removeHelper(node->left, key);
+
+//	else if (comparator->compare(key, node->data) > 0)
+//		// if more, assign the right child to be the deleted node
+//		node->right = removeHelper(node->right, key);
+
+//	else { // found the right node
+//		if (node == this->root) {
+
+//			if (!node->left) { // if no left child, assign temp to left, delete
+//												 // current node and return temp
+//				this->root = node->right;
+//				delete node;
+//				return root;
+//			} else if (!node->right) {
+//				this->root = node->left;
+//				delete node;
+//				return root;
+//			} else {
+//				// has both children
+//				node->data = findLargest(node->left)->data;
+//				node->left = removeHelper(node->left, node->data);
+//			}
+
+//		} else if (!node->left) { // if no left child, assign temp to left, delete
+//															// current node and return temp
+//			BST_Node<T> *temp = node->right;
+//			delete node;
+//			return temp;
+//		} else if (!node->right) {
+//			BST_Node<T> *temp = node->left;
+//			delete node;
+//			return temp;
+//		} else {
+//			// has both children
+//			node->data = findLargest(node->left)->data;
+//			node->left = removeHelper(node->left, node->data);
+//		}
+//	}
+//	return node;
+//}
 
 template <typename T>
 void BST<T>::emptyHelper(BST_Node<T> *node) {
@@ -340,9 +418,9 @@ BST_Node<T> *BST<T>::searchHelper(BST_Node<T> *root, const T &key, int &nOps) {
 	if (comparator->compare(key, root->data) < 0)
 		return searchHelper(root->left, key, nOps);
 	nOps++;
-	if (comparator->compare(key, root->data) > 0)
-		return searchHelper(root->right, key, nOps);
-	return root;
+	if (key == root->data)
+		return root;
+	return searchHelper(root->right, key, nOps);
 }
 
 template <typename T>
