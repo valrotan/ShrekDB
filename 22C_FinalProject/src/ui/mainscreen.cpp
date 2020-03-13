@@ -65,6 +65,7 @@ void MainScreen::interact() {
 		case 3:
 			break;
 		case 4:
+			out << *table;
 			break;
 		case 5:
 			break;
