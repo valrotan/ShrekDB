@@ -156,7 +156,8 @@ template <typename T>
 int LinkedList<T>::find(const T &data) {
 	LinkNode<T> *p = head->next;
 	for (int i = 0; i < count; i++) {
-		if (comparator->compare(p->data, data) == 0) {
+		if (comparator->strictlyEquals(
+						p->data, data)) { // comparator->compare(p->data, data) == 0
 			return i;
 		}
 		p = p->next;

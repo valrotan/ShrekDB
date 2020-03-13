@@ -13,22 +13,30 @@ void utilTest() {
 
 	Character *c1 = new Character(1, "john doe", "dog", "male", "c teacher",
 																"orange", 1.34, 34, 0, 4);
-	Character *c2 = new Character(2, "john d", "dog", "male", "c teacher",
+	Character *c2 = new Character(1, "john doe", "dog", "male", "c teacher",
 																"orange", 1.34, 34, 0, 4);
-	CharacterPointerComparator cpc(CHARACTER_NAME);
+	cout << "Character == " << (*c1 == *c2) << endl;
+	Character *c3 = new Character(2, "john d", "dog", "male", "c teacher",
+																"orange", 1.34, 34, 0, 4);
+	CharacterPointerComparator cpc(CHARACTER_ID);
 	GraphNodePointerComparator<Character *> gnpc(cpc);
 
 	GraphNode<Character *> *a = new GraphNode<Character *>(c1);
 	GraphNode<Character *> *b = new GraphNode<Character *>(c2);
-	cout << gnpc.compare(a, b) << endl;
+	GraphNode<Character *> *c = new GraphNode<Character *>(c3);
+	cout << "Comparator == 0 : " << gnpc.compare(a, b) << endl;
+	cout << "Comparator == 1 : " << gnpc.compare(a, c) << endl;
+	cout << "Comparator == 1 : " << gnpc.strictlyEquals(a, b) << endl;
+	cout << "Comparator == 0 : " << gnpc.strictlyEquals(b, c) << endl;
 
 	Graph<Character *> g(cpc);
 	g.addNode(c1);
-	g.addNode(c1);
-	g.addEdge(c1, c2);
-	cout << g.countEdges() << endl;
+	g.addNode(c3);
+	cout << "contains " << g.findNode(c2) << endl;
+	g.addEdge(c2, c3);
+	cout << "edge count " << g.countEdges() << endl;
 	g.removeNode(c2);
-	cout << g.countEdges() << endl;
+	cout << "edge count " << g.countEdges() << endl;
 
 	delete a;
 	delete b;
@@ -39,14 +47,15 @@ void utilTest() {
 void graphTest() {
 	cout << "running graph test...\n";
 
-	CharacterPointerComparator cpc2(CHARACTER_NAME);
+	CharacterPointerComparator cpc2(CHARACTER_ID);
 	Graph<Character *> g(cpc2);
 
 // read characters
 #ifndef __APPLE__
-	fstream dataFile("C:\\Users\\taras\\source\\repos\\valrotan\\22C_FinalProject\\data.tsv");
+	fstream dataFile(
+			"C:\\Users\\taras\\source\\repos\\valrotan\\22C_FinalProject\\data.tsv");
 #else
-	fstream dataFile("data.tsv");
+	fstream dataFile("characters.tsv");
 #endif
 	if (!dataFile) {
 		cout << "File can't be opened..." << endl;
@@ -66,12 +75,14 @@ void graphTest() {
 
 	// read relationships
 #ifndef __APPLE__
-	fstream posFile("C:\\Users\\taras\\source\\repos\\22C_FinalProject\\positive.tsv");
-#else		
+	fstream posFile(
+			"C:\\Users\\taras\\source\\repos\\22C_FinalProject\\positive.tsv");
+#else
 	ifstream posFile("positive.tsv");
 #endif
 #ifndef __APPLE__
-	fstream negFile("C:\\Users\\taras\\source\\repos\\22C_FinalProject\\negative.tsv");
+	fstream negFile(
+			"C:\\Users\\taras\\source\\repos\\22C_FinalProject\\negative.tsv");
 #else
 	ifstream negFile("negative.tsv");
 #endif

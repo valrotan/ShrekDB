@@ -14,7 +14,8 @@ enum CHARACTER_PROPERTY {
 	CHARACTER_HEIGHT,
 	CHARACTER_MASS,
 	CHARACTER_BMI,
-	CHARACTER_AGE
+	CHARACTER_AGE,
+	CHARACTER_ALL
 };
 
 // table for printing a table of characters
@@ -31,7 +32,8 @@ enum CHARACTER_STYLE {
 	CHARACTER_STYLE_BMI,
 	CHARACTER_STYLE_AGE,
 	CHARACTER_STYLE_TABLE,
-	CHARACTER_STYLE_DB
+	CHARACTER_STYLE_DB,
+	CHARACTER_STYLE_SINGLE
 };
 
 class Character {
@@ -71,7 +73,7 @@ public:
 		return "id	name	species	sex	occupation	color	age	size	mass	bmi";
 	}
 
-	friend bool operator==(Character &a, Character &b);
+	friend bool operator==(const Character &a, const Character &b);
 
 	// Input stream operator
 	// Populates a character from an istream
@@ -102,6 +104,8 @@ public:
 	int getAge() const;
 	void setAge(int value);
 	static void setPrintStyle(const CHARACTER_STYLE &value);
+	int getId() const;
+	void setId(int value);
 };
 
 class CharacterComparator : public Comparator<Character> {
@@ -130,5 +134,9 @@ public:
 
 		CharacterPointerComparator *cpc = new CharacterPointerComparator(*this);
 		return cpc;
+	}
+
+	bool strictlyEquals(Character *const &a, Character *const &b) override {
+		return *a == *b;
 	}
 };

@@ -12,6 +12,8 @@ public:
 	virtual int compare(const T &a, const T &b) = 0;
 
 	virtual Comparator<T> *clone() const = 0;
+
+	virtual bool strictlyEquals(const T &a, const T &b) { return a == b; }
 };
 
 template <typename T>
