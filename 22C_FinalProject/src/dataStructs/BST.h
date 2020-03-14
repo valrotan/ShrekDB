@@ -99,7 +99,7 @@ public:
 
 	// stats getters
 	int getAverageInsertions() { return this->totalInserts / this->insertOp; }
-	int getAverageFinds() { return this->totalFinds / findOp; }
+	int getAverageFinds() { return findOp == 0 ? 0 : this->totalFinds / findOp; }
 
 	// sets the traversal order of the tree. << operator will use the specified
 	// order. BST_INORDER is default.
