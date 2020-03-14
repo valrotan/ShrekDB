@@ -27,9 +27,7 @@ private:
 public:
 	Database(std::string charsPath, std::string posPath, std::string negPath)
 			: charsPath(charsPath), posPath(posPath), negPath(negPath) {}
-	~Database() {
-		closeAll();
-	}
+	~Database() { closeAll(); }
 
 	void openReadChars() {
 		closeReadChars();
@@ -43,9 +41,7 @@ public:
 		charIStream >> c;
 		return *this;
 	}
-	bool doneReadingChars() {
-		return charIStream.eof();
-	}
+	bool doneReadingChars() { return charIStream.eof(); }
 	void closeReadChars() {
 		if (cio)
 			charIStream.close();
@@ -63,9 +59,7 @@ public:
 		posIStream >> a >> b;
 		return *this;
 	}
-	bool doneReadingPos() {
-		return posIStream.eof();
-	}
+	bool doneReadingPos() { return posIStream.eof(); }
 	void closeReadPos() {
 		if (pio)
 			posIStream.close();
@@ -83,9 +77,7 @@ public:
 		negIStream >> a >> b;
 		return *this;
 	}
-	bool doneReadingNeg() {
-		return negIStream.eof();
-	}
+	bool doneReadingNeg() { return negIStream.eof(); }
 	void closeReadNeg() {
 		if (nio)
 			negIStream.close();
@@ -160,6 +152,12 @@ public:
 		negOStream.clear();
 		negOStream.close();
 	}
+	std::ifstream &getCharIStream();
+	std::ifstream &getPosIStream();
+	std::ifstream &getNegIStream();
+	std::ofstream &getCharOStream();
+	std::ofstream &getPosOStream();
+	std::ofstream &getNegOStream();
 };
 
 #endif // DATABASE_H

@@ -24,6 +24,8 @@ MainScreen::MainScreen(std::istream &tin, std::ostream &tout)
 }
 
 MainScreen::~MainScreen() {
+	writeData();
+
 	delete table;
 	delete idTable;
 	delete bst;
@@ -111,7 +113,7 @@ void MainScreen::interact() {
 					<< std::endl;
 
 			Character::setPrintStyle(CHARACTER_STYLE_TABLE);
-			out << Character::getTableHeader();
+			out << Character::getTableHeader() << "\n";
 			{
 				int l = Character::getTableHeader().length();
 				for (int i = 0; i < l; i++) {
@@ -239,6 +241,14 @@ void MainScreen::addData() {
 	table->insert(c->getName(), c);
 	bst->add(c);
 	graph->addNode(c);
+}
+
+void MainScreen::writeData() {
+	Character::setPrintStyle(CHARACTER_STYLE_DB);
+	db->clearChars();
+	db->openWriteChars();
+	table->dbPrint(db->getCharOStream());
+	db->closeWriteChars();
 }
 
 void MainScreen::removeData() {

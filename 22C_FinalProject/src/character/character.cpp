@@ -23,7 +23,7 @@ Character::Character(int id,                 //
 			bmi(bmi), age(age) {}
 
 std::string Character::getTableHeader() {
-	return "    ID |                             NAME |          SPECIES |      "
+	return "    ID |                     NAME |          SPECIES |      "
 				 "     GENDER |       OCCUPATION |        COLOR |  AGE | "
 				 "  MASS | HEIGHT |    BMI ";
 }
