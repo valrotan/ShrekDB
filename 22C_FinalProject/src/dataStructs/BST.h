@@ -98,13 +98,12 @@ public:
 	void postOrderTrav(std::ostream &out);
 
 	// stats getters
-	int getAverageInsertions() { return this->totalInserts/this->insertOp; }
-	int getAverageFinds() { return findOp == 0 ? 0 : this->totalFinds / findOp; }
+	int getAverageInsertions() { return this->totalInserts / this->insertOp; }
+	int getAverageFinds() { return this->totalFinds / findOp; }
 
 	// sets the traversal order of the tree. << operator will use the specified
 	// order. BST_INORDER is default.
 	void setOrder(BST_TRAVERSAL order);
-
 
 	// output operator. Traverses the tree in traversalOrder and outputs nodes to
 	// out
@@ -118,7 +117,7 @@ BST<T>::BST() {
 	totalInserts = 0;
 	findOp = 0;
 	totalFinds = 0;
-	
+
 	root = nullptr;
 	comparator = new GenericComparator<T>;
 }
@@ -212,6 +211,7 @@ void BST<T>::addHelper(BST_Node<T> *node, const T &val, int &nOps) {
 		if (node->left) {
 			addHelper(node->left, val, nOps);
 		} else {
+			nOps++;
 			node->left = createNode(val);
 		}
 	} else {
@@ -495,19 +495,19 @@ void BST<T>::prettyPreorder(BST_Node<T> *root, std::ostream &out,
 	}
 
 	out << prefix;
-	out << ((hasLeft && hasRight) ? "├── " : "");
-	out << ((!hasLeft && hasRight) ? "└── " : "");
+	out << ((hasLeft && hasRight) ? "|-- " : "");
+	out << ((!hasLeft && hasRight) ? "`-- " : "");
 
 	if (hasRight) {
 		bool printStrand =
 				(hasLeft && hasRight && (root->right->right || root->right->left));
-		std::string newPrefix = prefix + (printStrand ? "│   " : "    ");
+		std::string newPrefix = prefix + (printStrand ? "|   " : "    ");
 		out << root->right->data << std::endl;
 		prettyPreorder(root->right, out, newPrefix);
 	}
 
 	if (hasLeft) {
-		out << (hasRight ? prefix : "") << "└── " << root->left->data << std::endl;
+		out << (hasRight ? prefix : "") << "`-- " << root->left->data << std::endl;
 		prettyPreorder(root->left, out, prefix + "    ");
 	}
 }
