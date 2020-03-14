@@ -103,6 +103,9 @@ bool HashTable<K, T>::insert(K k, T data) {
 			maxList = l->getCount();
 	}
 	numNodes++;
+	HashtableUnit<K, T>* in = new HashtableUnit<K, T>(k, data);
+	if (l->find(in) != -1)
+		throw "Exception: Duplicate key";
 	l->add(new HashtableUnit<K,T>(k,data));
 	return true;
 }
@@ -125,7 +128,7 @@ T HashTable<K, T>::remove(K k) {
 			return l->remove(i)->getData();
 		}
 	};
-	throw "ExceptionL element not found";
+	throw "Exception: element not found";
 }
 
 template <typename K, typename T>

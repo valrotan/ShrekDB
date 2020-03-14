@@ -14,8 +14,8 @@ public:
 	void setKey(K);
 	void setData(T);
 
-	friend bool operator==(const HashtableUnit<K,T> &a, const HashtableUnit<K,T> &b) {
-		return a.data == b.data;
+	friend bool operator == (const HashtableUnit<K,T> &a, const HashtableUnit<K,T> &b) {
+		return a.key == b.key;
 	}
 };
 
@@ -60,6 +60,10 @@ public:
 
 	int compare(const HashtableUnit<K,T>* const & a, const HashtableUnit<K,T>* const & b) override {
 		return unitComparator.compare(*a,*b);
+	}
+
+	bool strictlyEquals(const HashtableUnit<K, T>* const& a, const HashtableUnit<K, T>* const& b) override {
+		return a->getKey() == b->getKey();
 	}
 
 	UnitPointerComparator* clone() const override {

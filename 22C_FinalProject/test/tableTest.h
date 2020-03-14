@@ -18,7 +18,12 @@ void runTableTests() {
 	table.insert("Shrek", shrek);
 	table.insert("Fiona", fiona);
 	table.insert("Donkey", donkey);
-
+	try {
+		table.insert("Shrek", shrek);
+	}
+	catch (const char* e) {
+		cout << e << endl;
+	}
 	Character* c = table.find("Fiona");
 	//cout << *c << endl;
 
