@@ -6,7 +6,14 @@ template <typename T>
 class Hasher {
 public:
 	virtual ~Hasher() {}
+	
+	// Used for generic hashing of any data types
+	// Pre:		key - key to hash
+	//			size - number of buckets
+	// Returns: hash location for the key
 	virtual long hash(T key, const int size) = 0;
+
+	// Used to clone current hasher
 	virtual Hasher* clone() const = 0;
 };
 

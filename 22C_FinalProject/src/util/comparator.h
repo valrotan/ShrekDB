@@ -6,13 +6,16 @@ class Comparator {
 public:
 	virtual ~Comparator() {}
 
+	// Used for generic comparasons in the data structures
 	// return > 0 if a > b
 	//        < 0 if a < b
 	//          0 if a == b
 	virtual int compare(const T &a, const T &b) = 0;
 
+	// function to clone current comparator
 	virtual Comparator<T> *clone() const = 0;
 
+	// Compares if two data instances are compleatly equal
 	virtual bool strictlyEquals(const T &a, const T &b) { return a == b; }
 };
 
