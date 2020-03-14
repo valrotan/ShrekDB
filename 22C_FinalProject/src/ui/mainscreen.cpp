@@ -10,7 +10,7 @@ MainScreen::MainScreen(std::istream &tin, std::ostream &tout)
 		table = new HashTable<std::string, Character *>(StringHasher());
 		idTable = new HashTable<int, Character *>(IntegerHasher());
 		list = new LinkedList<Character *>(
-				CharacterPointerComparator(CHARACTER_COLOR));
+				ASCENDING, CharacterPointerComparator(CHARACTER_AGE));
 		bst =
 				new BST<Character *>(CharacterPointerComparator(CHARACTER_OCCUPATION));
 		graph = new Graph<Character *>(CharacterPointerComparator(CHARACTER_ID));
@@ -25,6 +25,7 @@ MainScreen::MainScreen(std::istream &tin, std::ostream &tout)
 
 MainScreen::~MainScreen() {
 	delete table;
+	delete idTable;
 	delete bst;
 	delete graph;
 
@@ -48,7 +49,7 @@ void MainScreen::interact() {
 					 " x [2] Delete data \n"
 					 " x [3] Search and display data using the primary key \n"
 					 " x [4] List data in hash table sequence \n"
-					 "  [5] List data in sorted key sequence \n"
+					 " x [5] List data in sorted key sequence \n"
 					 " x [6] Print indented tree \n"
 					 " x [7] Print pretty graph \n"
 					 " x [8] Efficiency \n"
@@ -60,11 +61,11 @@ void MainScreen::interact() {
 		out << std::endl;
 		std::string temp;
 
-
 		IOUtil::clearScreen();
 		switch (option) {
 		case 1: // add data
-			out << Color(BLUE, BRIGHT_GRAY) << "Add" << Color(RESET) << std::endl << std::endl;
+			out << Color(BLUE, BRIGHT_GRAY) << "Add" << Color(RESET) << std::endl
+					<< std::endl;
 			addData();
 
 			in.ignore();
@@ -73,7 +74,8 @@ void MainScreen::interact() {
 
 			break;
 		case 2: // delete data
-			out << Color(BLUE, BRIGHT_GRAY) << "Delete" << Color(RESET) << std::endl << std::endl;
+			out << Color(BLUE, BRIGHT_GRAY) << "Delete" << Color(RESET) << std::endl
+					<< std::endl;
 			removeData();
 
 			in.ignore();
@@ -82,7 +84,8 @@ void MainScreen::interact() {
 
 			break;
 		case 3: // find data
-			out << Color(BLUE, BRIGHT_GRAY) << "Find" << Color(RESET) << std::endl << std::endl;
+			out << Color(BLUE, BRIGHT_GRAY) << "Find" << Color(RESET) << std::endl
+					<< std::endl;
 			findData();
 
 			in.ignore();
@@ -91,7 +94,10 @@ void MainScreen::interact() {
 
 			break;
 		case 4: // list hash table
-			out << Color(BLUE, BRIGHT_GRAY) << "Hashtable" << Color(RESET) << std::endl << std::endl;
+			out << Color(BLUE, BRIGHT_GRAY) << "Hashtable" << Color(RESET)
+					<< std::endl
+					<< std::endl;
+			Character::setPrintStyle(CHARACTER_STYLE_NAME);
 			out << *table;
 
 			in.ignore();
@@ -100,15 +106,29 @@ void MainScreen::interact() {
 
 			break;
 		case 5: // list in sorted key
-			out << Color(BLUE, BRIGHT_GRAY) << "Sorted Key" << Color(RESET) << std::endl << std::endl;
+			out << Color(BLUE, BRIGHT_GRAY) << "Sorted Key - Age" << Color(RESET)
+					<< std::endl
+					<< std::endl;
+
+			Character::setPrintStyle(CHARACTER_STYLE_TABLE);
+			out << Character::getTableHeader();
+			{
+				int l = Character::getTableHeader().length();
+				for (int i = 0; i < l; i++) {
+					out << "-";
+				}
+			}
+			out << "\n";
+			out << *list;
 
 			in.ignore();
 			getline(in, temp);
 			IOUtil::clearScreen();
-
 			break;
 		case 6: // print tree
-			out << Color(BLUE, BRIGHT_GRAY) << "Tree" << Color(RESET) << std::endl << std::endl;
+			out << Color(BLUE, BRIGHT_GRAY) << "Tree - Occupation" << Color(RESET)
+					<< std::endl
+					<< std::endl;
 			Character::setPrintStyle(CHARACTER_STYLE_OCCUPATION);
 			bst->setOrder(BST_PRETTY_PREORDER);
 			out << *bst << std::endl;
@@ -119,7 +139,8 @@ void MainScreen::interact() {
 
 			break;
 		case 7: // print graph
-			out << Color(BLUE, BRIGHT_GRAY) << "Graph" << Color(RESET) << std::endl << std::endl;
+			out << Color(BLUE, BRIGHT_GRAY) << "Graph" << Color(RESET) << std::endl
+					<< std::endl;
 			Character::setPrintStyle(CHARACTER_STYLE_NAME);
 			out << *graph << std::endl;
 
@@ -129,17 +150,25 @@ void MainScreen::interact() {
 
 			break;
 		case 8: // print efficiency
-			out << Color(BLUE, BRIGHT_GRAY) << "Efficiency" << Color(RESET) << std::endl << std::endl;
+			out << Color(BLUE, BRIGHT_GRAY) << "Efficiency" << Color(RESET)
+					<< std::endl
+					<< std::endl;
 			out << Color(WHITE) << "\tHashtable: " << Color(RESET) << std::endl;
-			out << Color(BRIGHT_GRAY) << "\t\tLoad Factor: " << Color(RESET) << table->getLoad() << std::endl;
-			out << Color(BRIGHT_GRAY) << "\t\tLongest Linked List: " << Color(RESET) << table->getMaxListSize() << std::endl;
-			out << Color(BRIGHT_GRAY) << "\t\tAverage number of nodes in linked lists: " <<
-										Color(RESET) << table->getAverageNumNodes() << std::endl;
+			out << Color(BRIGHT_GRAY) << "\t\tLoad Factor: " << Color(RESET)
+					<< table->getLoad() << std::endl;
+			out << Color(BRIGHT_GRAY) << "\t\tLongest Linked List: " << Color(RESET)
+					<< table->getMaxListSize() << std::endl;
+			out << Color(BRIGHT_GRAY)
+					<< "\t\tAverage number of nodes in linked lists: " << Color(RESET)
+					<< table->getAverageNumNodes() << std::endl;
 			out << Color(WHITE) << "\tBST: " << Color(RESET) << std::endl;
-			out << Color(BRIGHT_GRAY) << "\t\tAverage number of operations in inserts: " << Color(RESET)
-																		<< bst->getAverageInsertions()  << std::endl;
-			out << Color(BRIGHT_GRAY) << "\t\tAverage number of operations in finds: " << Color(RESET)
-																		<< bst->getAverageFinds() << std::endl << std::endl;
+			out << Color(BRIGHT_GRAY)
+					<< "\t\tAverage number of operations in inserts: " << Color(RESET)
+					<< bst->getAverageInsertions() << std::endl;
+			out << Color(BRIGHT_GRAY)
+					<< "\t\tAverage number of operations in finds: " << Color(RESET)
+					<< bst->getAverageFinds() << std::endl
+					<< std::endl;
 			in.ignore();
 			getline(in, temp);
 			IOUtil::clearScreen();

@@ -230,7 +230,7 @@ template <typename T>
 std::ostream &operator<<(std::ostream &out, LinkedList<T> &list) {
 	LinkNode<T> *head = list.head->getNext();
 	while (head != nullptr) {
-		out << head->getData() << ", ";
+		out << head->getData() << "\n";
 		head = head->getNext();
 	}
 	return out;
