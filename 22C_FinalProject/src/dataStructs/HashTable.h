@@ -11,10 +11,10 @@ template <typename K, typename T>
 class HashTable {
 private:
 	int size;
-	LinkedList<const HashtableUnit<K, T>*>** table;
-	int* listLengths;
-	Hasher<K> *hasher;
-	Comparator<K>* comparator;
+	LinkedList<const HashtableUnit<K, T>*>** table; // table of linked lists
+	int* listLengths; // lengths of linked lists in the table
+	Hasher<K> *hasher; // used to generically hash keys 
+	Comparator<K>* comparator; // used to generically compare keys in the table
 
 public:
 	HashTable(const Hasher<K>&);
@@ -22,7 +22,7 @@ public:
 	HashTable(int, const Comparator<T>&, const Hasher<K>&);
 	~HashTable();
 
-	// getters/setters
+	// stats getters
 	int getSize() { return size; }
 	int getCount();
 	double getLoad();
@@ -31,11 +31,32 @@ public:
 	int getAverageNumNodes();
 
 
+	// Insert an element into the table
+	// Pre: K - key with datatype of K
+	//		T - data to be inserted
+	// Post: item is inserted into the table
+	// Returns: success value
 	bool insert(K, T);
+
+	// Checks if the data exists in the table
+	// Pre: K - key with datatype of K
+	// Post: item is looked up in the table
+	// Returns: existance value
 	bool contains(K);
+
+	// Removes element from the table
+	// Pre: K - key with datatype of K
+	// Post: item is deleted from the table
+	// Returns: data that was deleted
 	T remove(K);
+
+	// Finds data in the table
+	// Pre: K - key with datatype of K
+	// Post: item is looked up in the table
+	// Returns: data in the table
 	T find(K);
 
+	// Clear the list from all of the values
 	void clear();
 	
 	template<typename U, typename V>
