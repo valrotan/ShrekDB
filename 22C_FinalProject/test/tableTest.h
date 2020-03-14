@@ -24,6 +24,14 @@ void runTableTests() {
 	catch (const char* e) {
 		cout << e << endl;
 	}
+
+	cout << "Size: " << table.getSize() << endl;
+	cout << "Count filled: " << table.getCount() << endl;
+	cout << "Load: " << table.getLoad() << endl;
+	cout << "Max list size: " << table.getMaxListSize() << endl;
+	cout << "Number of List Nodes: " << table.getNumNodes() << endl;
+	cout << "Average Number of Nodes: " << table.getAverageNumNodes() << endl << endl;
+
 	Character* c = table.find("Fiona");
 	//cout << *c << endl;
 

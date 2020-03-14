@@ -11,11 +11,8 @@ template <typename K, typename T>
 class HashTable {
 private:
 	int size;
-	int load;
-	int maxList;
-	int numNodes;
-	int avgNumNodes;
 	LinkedList<const HashtableUnit<K, T>*>** table;
+	int* listLengths;
 	Hasher<K> *hasher;
 	Comparator<K>* comparator;
 
@@ -26,12 +23,12 @@ public:
 	~HashTable();
 
 	// getters/setters
-	int getCount() { return load; }
 	int getSize() { return size; }
-	double getLoad() { return (double)load / size; }
-	int getMaxListSize() { return maxList; }
-	int getNumNodes() { return numNodes; }
-	int getAverageNumNodes(){ return avgNumNodes; }
+	int getCount();
+	double getLoad();
+	int getMaxListSize();
+	int getNumNodes();
+	int getAverageNumNodes();
 
 
 	bool insert(K, T);
@@ -46,8 +43,9 @@ public:
 };
 
 template <typename K, typename T>
-HashTable<K, T>::HashTable(const Hasher<K>& h): load(0), maxList(0), avgNumNodes(0) {
+HashTable<K, T>::HashTable(const Hasher<K>& h) {
 	size = 10;
+	listLengths = new int[size] {};
 	comparator = new GenericComparator<K>;
 	table = new LinkedList<const HashtableUnit<K,T>*>*[size];
 	for (int i = 0; i < size; i++) {
@@ -57,8 +55,9 @@ HashTable<K, T>::HashTable(const Hasher<K>& h): load(0), maxList(0), avgNumNodes
 }
 
 template <typename K, typename T>
-HashTable<K, T>::HashTable(int s, const Hasher<K>& h) : load(0), maxList(0), avgNumNodes(0) {
+HashTable<K, T>::HashTable(int s, const Hasher<K>& h) {
 	size = s;
+	listLengths = new int[size] {};
 	table = new LinkedList<const HashtableUnit<K, T>*>*[size];
 	comparator = new GenericComparator<K>;
 	for (int i = 0; i < size; i++) {
@@ -68,8 +67,9 @@ HashTable<K, T>::HashTable(int s, const Hasher<K>& h) : load(0), maxList(0), avg
 }
 
 template <typename K, typename T>
-HashTable<K, T>::HashTable(int s, const Comparator<T>& comp, const Hasher<K>& h) : load(0), maxList(0), avgNumNodes(0) {
+HashTable<K, T>::HashTable(int s, const Comparator<T>& comp, const Hasher<K>& h) {
 	size = s;
+	listLengths = new int[size] {};
 	table = new LinkedList<const HashtableUnit<K, T>*>*[size];
 	comparator = comp.clone();
 
@@ -83,6 +83,7 @@ template <typename K, typename T>
 HashTable<K, T>::~HashTable() {
 	delete hasher;
 	delete comparator;
+	delete listLengths;
 	for (int i = 0; i < this->size; i++) {
 		LinkedList<const HashtableUnit<K, T>*>* l = this->table[i];
 		for (int j = 0; j < l->getCount(); j++) {
@@ -95,17 +96,12 @@ HashTable<K, T>::~HashTable() {
 template <typename K, typename T>
 bool HashTable<K, T>::insert(K k, T data) {
 	long key = hasher->hash(k,this->size);
+
 	LinkedList<const HashtableUnit<K, T>*>* l = table[key];
-	if (l->getCount() <= 0)
-		load++;
-	else {
-		if (maxList < l->getCount())
-			maxList = l->getCount();
-	}
-	numNodes++;
 	HashtableUnit<K, T>* in = new HashtableUnit<K, T>(k, data);
 	if (l->find(in) != -1)
 		throw "Exception: Duplicate key";
+	listLengths[key]++;
 	l->add(new HashtableUnit<K,T>(k,data));
 	return true;
 }
@@ -115,17 +111,10 @@ template <typename K, typename T>
 T HashTable<K, T>::remove(K k) {
 	long key = hasher->hash(k, this->size);
 	LinkedList<const HashtableUnit<K, T>*>* l = table[key];
-
 	for (int i = 0; i < l->getCount(); i++) {
 		if (comparator->compare(l->getData(i)->getKey(), k) == 0) {
-			if (l->getCount() <= 0)
-				load--;
-			else {
-				if (maxList < l->getCount())
-					maxList = l->getCount();
-			}
-			numNodes--;
 			return l->remove(i)->getData();
+			listLengths[key]--;
 		}
 	};
 	throw "Exception: element not found";
@@ -158,6 +147,7 @@ bool HashTable<K, T>::contains(K k) {
 template <typename K, typename T>
 void HashTable<K, T>::clear() {
 	for (int i = 0; i < this->size; i++) {
+		listLengths[i] = 0;
 		LinkedList<const HashtableUnit<K, T>*>* l = this->table[i];
 		for (int j = 0; j < l->getCount(); j++) {
 			delete l->getData(j);
@@ -179,3 +169,44 @@ std::ostream& operator << (std::ostream& out, HashTable<K, T>& hashtable) {
 	
 	return out;
 }
+
+template<typename K, typename T>
+int HashTable<K, T>::getMaxListSize() {
+	int max = -1;
+	for (int i = 0; i < this->size; i++)
+		if (listLengths[i] > max)
+			max = listLengths[i];
+	return max;
+}
+
+template<typename K, typename T>
+int HashTable<K, T>::getCount() {
+	int count = 0;
+	for (int i = 0; i < size; i++) {
+		if (listLengths[i] > 0)
+			count++;
+	}
+
+	return count;
+}
+
+template<typename K, typename T>
+double HashTable<K, T>::getLoad() {
+	return (double)this->getCount() / size;
+}
+
+template<typename K, typename T>
+int HashTable<K, T>::getNumNodes() {
+	int count = 0;
+	for (int i = 0; i < size; i++) {
+		count += listLengths[i];
+	}
+
+	return count;
+}
+
+template<typename K, typename T>
+int HashTable<K, T>::getAverageNumNodes() {
+	return this->getNumNodes() / this->getCount();
+}
+
