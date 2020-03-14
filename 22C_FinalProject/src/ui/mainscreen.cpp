@@ -47,48 +47,59 @@ void MainScreen::interact() {
 					 " x [1] Add new data \n"
 					 " x [2] Delete data \n"
 					 " x [3] Search and display data using the primary key \n"
-					 "  [4] List data in hash table sequence \n"
+					 " x [4] List data in hash table sequence \n"
 					 "  [5] List data in sorted key sequence \n"
 					 " x [6] Print indented tree \n"
 					 " x [7] Print pretty graph \n"
-					 "  [7] Efficiency \n"
-					 "  [8] <Team choice menu option> \n"
-					 " x [9] Quit \n"
+					 "  [8] Efficiency \n"
+					 "  [9] <Team choice menu option> \n"
+					 " x [0] Quit \n"
 					 "> ";
 
 		in >> option;
 
 		switch (option) {
-		case 1:
+		case 1: // add data
 			addData();
 			break;
-		case 2:
+		case 2: // delete data
 			removeData();
 			break;
-		case 3:
+		case 3: // find data
 			findData();
 			break;
-		case 4:
+		case 4: // list hash table
 			out << *table;
 			break;
-		case 5:
+		case 5: // list in sorted key
 			break;
-		case 6:
+		case 6: // print tree
 			Character::setPrintStyle(CHARACTER_STYLE_OCCUPATION);
 			bst->setOrder(BST_PRETTY_PREORDER);
 			out << *bst << std::endl;
 			break;
-		case 7:
+		case 7: // print graph
 			Character::setPrintStyle(CHARACTER_STYLE_NAME);
 			out << *graph << std::endl;
 			break;
-		case 8:
+		case 8: // print efficiency
+			out << Color(BLUE) << "Efficiency: " << Color(RESET) << std::endl;
+			out << Color(WHITE) << "\tHashtable: " << Color(RESET) << std::endl;
+			out << Color(BRIGHT_GRAY) << "\t\tLoad Factor: " << Color(RESET) << table->getLoad() << std::endl;
+			out << Color(BRIGHT_GRAY) << "\t\tLongest Linked List: " << Color(RESET) << table->getMaxListSize() << std::endl;
+			out << Color(BRIGHT_GRAY) << "\t\tAverage number of nodes in linked lists: " <<
+										Color(RESET) << table->getAverageNumNodes() << std::endl;
+			out << Color(WHITE) << "\BST: " << Color(RESET) << std::endl;
+			out << Color(BRIGHT_GRAY) << "\t\tAverage number of operations in inserts: " << Color(RESET)
+																		<< bst->getAverageInsertions()  << std::endl;
+			out << Color(BRIGHT_GRAY) << "\t\tAverage number of operations in finds: " << Color(RESET)
+																		<< bst->getAverageFinds() << std::endl;
+
 			break;
-		case 9:
+		case 0: // done
 			done = true;
 			out << "Thanks for using " << Color(GREEN) << "ShrekDB" << Color(RESET)
 					<< "! \n";
-
 			break;
 		default:
 			out << Color(_ERROR)

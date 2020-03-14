@@ -21,6 +21,11 @@ enum BST_TRAVERSAL {
 template <typename T>
 class BST {
 private:
+	int insertOp;
+	int totalInserts;
+	int findOp;
+	int totalFinds;
+
 	BST_Node<T> *root;
 
 	BST_TRAVERSAL traversalOrder;
@@ -92,9 +97,14 @@ public:
 	void inOrderTrav(std::ostream &out);
 	void postOrderTrav(std::ostream &out);
 
+	// stats getters
+	int getAverageInsertions() { return this->totalInserts/this->insertOp; }
+	int getAverageFinds() { return this->totalFinds / findOp; }
+
 	// sets the traversal order of the tree. << operator will use the specified
 	// order. BST_INORDER is default.
 	void setOrder(BST_TRAVERSAL order);
+
 
 	// output operator. Traverses the tree in traversalOrder and outputs nodes to
 	// out
@@ -104,24 +114,44 @@ public:
 
 template <typename T>
 BST<T>::BST() {
+	insertOp = 0;
+	totalInserts = 0;
+	findOp = 0;
+	totalFinds = 0;
+	
 	root = nullptr;
 	comparator = new GenericComparator<T>;
 }
 
 template <typename T>
 BST<T>::BST(const Comparator<T> &comp) {
+	insertOp = 0;
+	totalInserts = 0;
+	findOp = 0;
+	totalFinds = 0;
+
 	root = nullptr;
 	comparator = comp.clone();
 }
 
 template <typename T>
 BST<T>::BST(const T &data) {
+	insertOp = 0;
+	totalInserts = 0;
+	findOp = 0;
+	totalFinds = 0;
+
 	root = createNode(data);
 	comparator = new GenericComparator<T>;
 }
 
 template <typename T>
 BST<T>::BST(const T &data, const Comparator<T> &comp) {
+	insertOp = 0;
+	totalInserts = 0;
+	findOp = 0;
+	totalFinds = 0;
+
 	root = createNode(data);
 	comparator = comp.clone();
 }
@@ -198,6 +228,8 @@ template <typename T>
 void BST<T>::add(const T &data) {
 	int nOps = 0;
 	add(data, nOps);
+	totalInserts += nOps;
+	insertOp++;
 }
 
 template <typename T>
@@ -208,15 +240,12 @@ void BST<T>::add(const T &data, int &nOps) {
 	} else {
 		addHelper(this->root, data, nOps);
 	}
+	totalInserts += nOps;
+	insertOp++;
 }
 
 template <typename T>
 T BST<T>::remove(const T &key) {
-	//	BST_Node<T> *node = removeHelper(this->root, key);
-	//	if (node)
-	//		return node->data;
-	//	else
-	//		throw "Not found";
 	T data = search(key);
 	removeHelper(&root, root, root, key, false);
 	return data;
@@ -305,6 +334,11 @@ void BST<T>::emptyHelper(BST_Node<T> *node) {
 
 template <typename T>
 void BST<T>::empty() {
+	insertOp = 0;
+	totalInserts = 0;
+	findOp = 0;
+	totalFinds = 0;
+
 	emptyHelper(root);
 	root = nullptr;
 }
@@ -342,6 +376,8 @@ template <typename T>
 T BST<T>::search(const T &key) {
 	int nOps = 0;
 	BST_Node<T> *node = searchHelper(this->root, key, nOps);
+	totalFinds += nOps;
+	findOp++;
 	if (node)
 		return node->data;
 	else {
@@ -352,6 +388,8 @@ T BST<T>::search(const T &key) {
 template <typename T>
 T BST<T>::search(const T &key, int &nOps) {
 	BST_Node<T> *node = searchHelper(this->root, key, nOps);
+	totalFinds += nOps;
+	findOp++;
 	if (node)
 		return node->data;
 	else {
