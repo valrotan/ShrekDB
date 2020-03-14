@@ -1,8 +1,5 @@
-// CIS22CH
-// Lab 4 - Create arithmetic expression interpreter
-// Taras Priadka
-
 #pragma once
+
 #include "LinkedList.h"
 #include <iostream>
 

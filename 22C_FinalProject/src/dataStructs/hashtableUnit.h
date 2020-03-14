@@ -9,6 +9,8 @@ private:
 	T data;
 public:
 	HashtableUnit(K, T);
+
+	// getters/setters for the unit
 	K getKey() const;
 	T getData() const;
 	void setKey(K);
