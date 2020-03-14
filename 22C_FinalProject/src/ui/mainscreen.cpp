@@ -51,50 +51,98 @@ void MainScreen::interact() {
 					 "  [5] List data in sorted key sequence \n"
 					 " x [6] Print indented tree \n"
 					 " x [7] Print pretty graph \n"
-					 "  [8] Efficiency \n"
+					 " x [8] Efficiency \n"
 					 "  [9] <Team choice menu option> \n"
 					 " x [0] Quit \n"
 					 "> ";
 
 		in >> option;
+		out << std::endl;
+		std::string temp;
 
+
+		IOUtil::clearScreen();
 		switch (option) {
 		case 1: // add data
+			out << Color(BLUE, BRIGHT_GRAY) << "Add" << Color(RESET) << std::endl << std::endl;
 			addData();
+
+			in.ignore();
+			getline(in, temp);
+			IOUtil::clearScreen();
+
 			break;
 		case 2: // delete data
+			out << Color(BLUE, BRIGHT_GRAY) << "Delete" << Color(RESET) << std::endl << std::endl;
 			removeData();
+
+			in.ignore();
+			getline(in, temp);
+			IOUtil::clearScreen();
+
 			break;
 		case 3: // find data
+			out << Color(BLUE, BRIGHT_GRAY) << "Find" << Color(RESET) << std::endl << std::endl;
 			findData();
+
+			in.ignore();
+			getline(in, temp);
+			IOUtil::clearScreen();
+
 			break;
 		case 4: // list hash table
+			out << Color(BLUE, BRIGHT_GRAY) << "Hashtable" << Color(RESET) << std::endl << std::endl;
 			out << *table;
+
+			in.ignore();
+			getline(in, temp);
+			IOUtil::clearScreen();
+
 			break;
 		case 5: // list in sorted key
+			out << Color(BLUE, BRIGHT_GRAY) << "Sorted Key" << Color(RESET) << std::endl << std::endl;
+
+			in.ignore();
+			getline(in, temp);
+			IOUtil::clearScreen();
+
 			break;
 		case 6: // print tree
+			out << Color(BLUE, BRIGHT_GRAY) << "Tree" << Color(RESET) << std::endl << std::endl;
 			Character::setPrintStyle(CHARACTER_STYLE_OCCUPATION);
 			bst->setOrder(BST_PRETTY_PREORDER);
 			out << *bst << std::endl;
+
+			in.ignore();
+			getline(in, temp);
+			IOUtil::clearScreen();
+
 			break;
 		case 7: // print graph
+			out << Color(BLUE, BRIGHT_GRAY) << "Graph" << Color(RESET) << std::endl << std::endl;
 			Character::setPrintStyle(CHARACTER_STYLE_NAME);
 			out << *graph << std::endl;
+
+			in.ignore();
+			getline(in, temp);
+			IOUtil::clearScreen();
+
 			break;
 		case 8: // print efficiency
-			out << Color(BLUE) << "Efficiency: " << Color(RESET) << std::endl;
+			out << Color(BLUE, BRIGHT_GRAY) << "Efficiency" << Color(RESET) << std::endl << std::endl;
 			out << Color(WHITE) << "\tHashtable: " << Color(RESET) << std::endl;
 			out << Color(BRIGHT_GRAY) << "\t\tLoad Factor: " << Color(RESET) << table->getLoad() << std::endl;
 			out << Color(BRIGHT_GRAY) << "\t\tLongest Linked List: " << Color(RESET) << table->getMaxListSize() << std::endl;
 			out << Color(BRIGHT_GRAY) << "\t\tAverage number of nodes in linked lists: " <<
 										Color(RESET) << table->getAverageNumNodes() << std::endl;
-			out << Color(WHITE) << "\BST: " << Color(RESET) << std::endl;
+			out << Color(WHITE) << "\tBST: " << Color(RESET) << std::endl;
 			out << Color(BRIGHT_GRAY) << "\t\tAverage number of operations in inserts: " << Color(RESET)
 																		<< bst->getAverageInsertions()  << std::endl;
 			out << Color(BRIGHT_GRAY) << "\t\tAverage number of operations in finds: " << Color(RESET)
-																		<< bst->getAverageFinds() << std::endl;
-
+																		<< bst->getAverageFinds() << std::endl << std::endl;
+			in.ignore();
+			getline(in, temp);
+			IOUtil::clearScreen();
 			break;
 		case 0: // done
 			done = true;
