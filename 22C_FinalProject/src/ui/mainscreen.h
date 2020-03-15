@@ -22,6 +22,7 @@ private:
 
 	void loadData();
 	void writeData();
+	void writeRelationshipData();
 	void findData();
 	void addData();
 	void removeData();

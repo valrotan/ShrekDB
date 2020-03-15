@@ -155,7 +155,22 @@ void MainScreen::interact() {
 			out << Color(BLUE, BRIGHT_GRAY) << "Efficiency" << Color(RESET)
 					<< std::endl
 					<< std::endl;
-			this->printEfficiency(out);
+			out << Color(WHITE) << "\tHashtable: " << Color(RESET) << std::endl;
+			out << Color(BRIGHT_GRAY) << "\t\tLoad Factor: " << Color(RESET)
+					<< table->getLoad() << std::endl;
+			out << Color(BRIGHT_GRAY) << "\t\tLongest Linked List: " << Color(RESET)
+					<< table->getMaxListSize() << std::endl;
+			out << Color(BRIGHT_GRAY)
+					<< "\t\tAverage number of nodes in linked lists: " << Color(RESET)
+					<< table->getAverageNumNodes() << std::endl;
+			out << Color(WHITE) << "\tBST: " << Color(RESET) << std::endl;
+			out << Color(BRIGHT_GRAY)
+					<< "\t\tAverage number of operations in inserts: " << Color(RESET)
+					<< bst->getAverageInsertions() << std::endl;
+			out << Color(BRIGHT_GRAY)
+					<< "\t\tAverage number of operations in finds: " << Color(RESET)
+					<< bst->getAverageFinds() << std::endl
+					<< std::endl;
 			in.ignore();
 			getline(in, temp);
 			IOUtil::clearScreen();
@@ -178,25 +193,6 @@ void MainScreen::interact() {
 	}
 }
 
-void MainScreen::printEfficiency(std::ostream& out) {
-	out << Color(WHITE) << "\tHashtable: " << Color(RESET) << std::endl;
-	out << Color(BRIGHT_GRAY) << "\t\tLoad Factor: " << Color(RESET)
-		<< table->getLoad() << std::endl;
-	out << Color(BRIGHT_GRAY) << "\t\tLongest Linked List: " << Color(RESET)
-		<< table->getMaxListSize() << std::endl;
-	out << Color(BRIGHT_GRAY)
-		<< "\t\tAverage number of nodes in linked lists: " << Color(RESET)
-		<< table->getAverageNumNodes() << std::endl;
-	out << Color(WHITE) << "\tBST: " << Color(RESET) << std::endl;
-	out << Color(BRIGHT_GRAY)
-		<< "\t\tAverage number of operations in inserts: " << Color(RESET)
-		<< bst->getAverageInsertions() << std::endl;
-	out << Color(BRIGHT_GRAY)
-		<< "\t\tAverage number of operations in finds: " << Color(RESET)
-		<< bst->getAverageFinds() << std::endl
-		<< std::endl;
-}
-
 void MainScreen::loadData() {
 	db->openReadChars();
 	Character *c = new Character;
@@ -215,9 +211,8 @@ void MainScreen::loadData() {
 	db->closeReadChars();
 
 	db->openReadPos();
-	while (!db->doneReadingPos()) {
-		int a, b;
-		db->readPos(a, b);
+	int a, b;
+	while (db->readPos(a, b)) {
 		Character *ca = idTable->find(a);
 		Character *cb = idTable->find(b);
 		graph->addEdge(ca, cb, true);
@@ -225,39 +220,87 @@ void MainScreen::loadData() {
 	db->closeReadPos();
 
 	db->openReadNeg();
-	while (!db->doneReadingNeg()) {
-		int a, b;
-		db->readNeg(a, b);
+	while (db->readNeg(a, b)) {
 		Character *ca = idTable->find(a);
 		Character *cb = idTable->find(b);
-		graph->addEdge(ca, cb);
+		graph->addEdge(ca, cb, false);
 	}
 	db->closeReadNeg();
 }
-
 void MainScreen::addData() {
-	out << "Please enter data in the following format, separateed by tabs \n";
-	out << Character::getDBHeader();
-	out << "\n> ";
-	Character* c = new Character;
-	in >> *c;
-	list->add(c);
-	table->insert(c->getName(), c);
-	idTable->insert(c->getId(), c);
-	bst->add(c);
-	graph->addNode(c);
-	//try {
-	//	in >> *c;
-	//	list->add(c);
-	//	table->insert(c->getName(), c);
-	//	bst->add(c);
-	//	graph->addNode(c);
-	//}
-	//catch (const char* e) {
-	//	//out << Color(RED) << e << Color(RESET) << std::endl;
-	//	delete c;
-	//	return;
-	//}
+	out << "Would you like to add a new [c]haracter or [p]ositive/[n]egative "
+				 "relationship? \n> ";
+	char c;
+	in >> c;
+	c = std::tolower(c);
+	if (c == 'c') {
+		out << "Please enter data in the following format, separated by tabs \n";
+		out << Character::getDBHeader();
+		out << "\n > ";
+		Character *c = new Character;
+		in >> *c;
+
+		list->add(c);
+		table->insert(c->getName(), c);
+		bst->add(c);
+		graph->addNode(c);
+	} else if (c == 'p' || c == 'n') {
+		out << "Please enter the two character names on two separate lines. \n> ";
+		std::string namea;
+		in.ignore(1024, '\n');
+		getline(in, namea);
+		out << "> ";
+		std::string nameb;
+		getline(in, nameb);
+
+		if (!table->contains(namea) || !table->contains(nameb)) {
+			out << "Characters not found.\n";
+			return;
+		}
+
+		Character *charA = table->find(namea);
+		Character *charB = table->find(nameb);
+
+		Character::setPrintStyle(CHARACTER_STYLE_SINGLE);
+		out << charA << std::endl << charB << std::endl;
+
+		out << "Confirm? \n[Y/n] > ";
+		char confirm;
+		in >> confirm;
+		if (std::tolower(confirm) == 'y') {
+			try {
+				graph->addEdge(charA, charB, c == 'p' ? true : false);
+				out << "Relationship added successfully. \n";
+			} catch (const char *e) {
+				out << e << std::endl;
+			}
+		} else {
+			out << "Cancelled new relationship. \n";
+		}
+	} else {
+		out << "Invalid option.\n";
+	}
+	writeData();
+}
+
+void MainScreen::writeRelationshipData() {
+	db->clearPos();
+	db->clearNeg();
+	db->openWritePos();
+	db->openWriteNeg();
+
+	int c = graph->countEdges();
+	for (int i = 0; i < c; i++) {
+		Character *a, *b;
+		graph->getEdgeByIndex(i, &a, &b);
+		if (graph->isEdgePositive(i)) {
+			db->writePos(a->getId(), b->getId());
+		} else {
+			db->writeNeg(a->getId(), b->getId());
+		}
+	}
+	db->closeWritePos();
+	db->closeWriteNeg();
 }
 
 void MainScreen::writeData() {
@@ -266,37 +309,80 @@ void MainScreen::writeData() {
 	db->openWriteChars();
 	table->dbPrint(db->getCharOStream());
 	db->closeWriteChars();
+	writeRelationshipData();
 }
 
 void MainScreen::removeData() {
-	out << "Please enter the name of the character to remove. \n> ";
-	std::string name;
-	in.ignore(1024, '\n');
-	getline(in, name);
-	if (!table->contains(name)) {
-		out << Color(_ERROR)
-				<< "Character not found. Please press any button and try again. \n"
-				<< Color(RESET);
-		std::string buf;
-		getline(in, buf);
-		IOUtil::clearScreen();
-		return;
-	}
-	Character *c = table->find(name);
-	Character::setPrintStyle(CHARACTER_STYLE_SINGLE);
-	out << c;
-	out << "Confirm remove?\n [Y/n]: ";
-	char confirm;
-	in >> confirm;
-	if (confirm == 'y' || confirm == 'Y') {
-		table->remove(c->getName());
-		bst->remove(c);
-		graph->removeNode(c);
-		delete list->remove(list->find(c));
-		out << "remove successful\n";
+	out << "Would you like to remove a [c]haracter or [r]elationship? \n> ";
+	char c;
+	in >> c;
+	c = std::tolower(c);
+	if (c == 'c') {
+		out << "Please enter the name of the character to remove. \n> ";
+		std::string name;
+		in.ignore(1024, '\n');
+		getline(in, name);
+		if (!table->contains(name)) {
+			out << Color(_ERROR)
+					<< "Character not found. Please press any button and try again. \n"
+					<< Color(RESET);
+			std::string buf;
+			getline(in, buf);
+			IOUtil::clearScreen();
+			return;
+		}
+		Character *c = table->find(name);
+		Character::setPrintStyle(CHARACTER_STYLE_SINGLE);
+		out << c;
+		out << "Confirm remove?\n [Y/n]: ";
+		char confirm;
+		in >> confirm;
+		if (confirm == 'y' || confirm == 'Y') {
+			table->remove(c->getName());
+			bst->remove(c);
+			graph->removeNode(c);
+			delete list->remove(list->find(c));
+			out << "remove successful\n";
+		} else {
+			out << "cancelled remove \n";
+		}
+	} else if (c == 'r') {
+		out << "Please enter the two character names on two separate lines. \n> ";
+		std::string namea;
+		in.ignore(1024, '\n');
+		getline(in, namea);
+		out << "> ";
+		std::string nameb;
+		getline(in, nameb);
+
+		if (!table->contains(namea) || !table->contains(nameb)) {
+			out << "Characters not found.\n";
+			return;
+		}
+
+		Character *charA = table->find(namea);
+		Character *charB = table->find(nameb);
+
+		Character::setPrintStyle(CHARACTER_STYLE_SINGLE);
+		out << charA << std::endl << charB << std::endl;
+
+		out << "Confirm remove relationship? \n[Y/n] > ";
+		char confirm;
+		in >> confirm;
+		if (std::tolower(confirm) == 'y') {
+			try {
+				graph->removeEdge(charA, charB);
+				out << "Relationship removed successfully. \n";
+			} catch (const char *e) {
+				out << e << std::endl;
+			}
+		} else {
+			out << "Cancelled remove relationship. \n";
+		}
 	} else {
-		out << "cancelled remove \n";
+		out << "Invalid option.\n";
 	}
+	writeData();
 }
 
 void MainScreen::findData() {
