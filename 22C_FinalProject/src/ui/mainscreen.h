@@ -25,6 +25,7 @@ private:
 	void findData();
 	void addData();
 	void removeData();
+	void printEfficiency(std::ostream&);
 
 public:
 	MainScreen(std::istream &tin, std::ostream &tout);

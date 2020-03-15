@@ -155,22 +155,7 @@ void MainScreen::interact() {
 			out << Color(BLUE, BRIGHT_GRAY) << "Efficiency" << Color(RESET)
 					<< std::endl
 					<< std::endl;
-			out << Color(WHITE) << "\tHashtable: " << Color(RESET) << std::endl;
-			out << Color(BRIGHT_GRAY) << "\t\tLoad Factor: " << Color(RESET)
-					<< table->getLoad() << std::endl;
-			out << Color(BRIGHT_GRAY) << "\t\tLongest Linked List: " << Color(RESET)
-					<< table->getMaxListSize() << std::endl;
-			out << Color(BRIGHT_GRAY)
-					<< "\t\tAverage number of nodes in linked lists: " << Color(RESET)
-					<< table->getAverageNumNodes() << std::endl;
-			out << Color(WHITE) << "\tBST: " << Color(RESET) << std::endl;
-			out << Color(BRIGHT_GRAY)
-					<< "\t\tAverage number of operations in inserts: " << Color(RESET)
-					<< bst->getAverageInsertions() << std::endl;
-			out << Color(BRIGHT_GRAY)
-					<< "\t\tAverage number of operations in finds: " << Color(RESET)
-					<< bst->getAverageFinds() << std::endl
-					<< std::endl;
+			this->printEfficiency(out);
 			in.ignore();
 			getline(in, temp);
 			IOUtil::clearScreen();
@@ -191,6 +176,25 @@ void MainScreen::interact() {
 			break;
 		}
 	}
+}
+
+void MainScreen::printEfficiency(std::ostream& out) {
+	out << Color(WHITE) << "\tHashtable: " << Color(RESET) << std::endl;
+	out << Color(BRIGHT_GRAY) << "\t\tLoad Factor: " << Color(RESET)
+		<< table->getLoad() << std::endl;
+	out << Color(BRIGHT_GRAY) << "\t\tLongest Linked List: " << Color(RESET)
+		<< table->getMaxListSize() << std::endl;
+	out << Color(BRIGHT_GRAY)
+		<< "\t\tAverage number of nodes in linked lists: " << Color(RESET)
+		<< table->getAverageNumNodes() << std::endl;
+	out << Color(WHITE) << "\tBST: " << Color(RESET) << std::endl;
+	out << Color(BRIGHT_GRAY)
+		<< "\t\tAverage number of operations in inserts: " << Color(RESET)
+		<< bst->getAverageInsertions() << std::endl;
+	out << Color(BRIGHT_GRAY)
+		<< "\t\tAverage number of operations in finds: " << Color(RESET)
+		<< bst->getAverageFinds() << std::endl
+		<< std::endl;
 }
 
 void MainScreen::loadData() {
@@ -230,17 +234,30 @@ void MainScreen::loadData() {
 	}
 	db->closeReadNeg();
 }
+
 void MainScreen::addData() {
 	out << "Please enter data in the following format, separateed by tabs \n";
 	out << Character::getDBHeader();
-	out << "\n > ";
-	Character *c = new Character;
+	out << "\n> ";
+	Character* c = new Character;
 	in >> *c;
-
 	list->add(c);
 	table->insert(c->getName(), c);
+	idTable->insert(c->getId(), c);
 	bst->add(c);
 	graph->addNode(c);
+	//try {
+	//	in >> *c;
+	//	list->add(c);
+	//	table->insert(c->getName(), c);
+	//	bst->add(c);
+	//	graph->addNode(c);
+	//}
+	//catch (const char* e) {
+	//	//out << Color(RED) << e << Color(RESET) << std::endl;
+	//	delete c;
+	//	return;
+	//}
 }
 
 void MainScreen::writeData() {
