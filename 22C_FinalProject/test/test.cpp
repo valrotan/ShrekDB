@@ -3,8 +3,8 @@
 #include "dbtest.h"
 #include "graphTest.h"
 #include "listTest.h"
-#include "utilTest.h"
 #include "tableTest.h"
+#include "utilTest.h"
 
 #include <iostream>
 using namespace std;
@@ -14,8 +14,8 @@ int main() {
 	//	characterTests();
 	//	runListTests();
 	//	runBSTTests();
-	//runGraphTests();
-	runTableTests();
+	// runGraphTests();
+	//	runTableTests();
 	//	runUtilTests();
-	//	dbtests();
+	dbtests();
 }

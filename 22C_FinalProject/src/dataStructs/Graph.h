@@ -43,6 +43,7 @@ public:
 	void removeEdgesWithNode(const T &a);
 	bool containsEdge(const T &a, const T &b);
 	int findEdge(const T &a, const T &b);
+	bool getEdgeByIndex(int i, T *a, T *b);
 
 	bool isEdgePositive(const T &a, const T &b);
 	bool isEdgePositive(int index);
@@ -133,6 +134,9 @@ T Graph<T>::getNodeByIndex(int index) {
 
 template <typename T>
 void Graph<T>::addEdge(const T &a, const T &b, bool positive) {
+	if (containsEdge(a, b)) {
+		throw "Graph: edge already exists";
+	}
 	int indA = findNode(a), indB = findNode(b);
 	if (indA != -1 && indB != -1) {
 		GraphEdge<T> *temp =
@@ -180,6 +184,15 @@ int Graph<T>::findEdge(const T &a, const T &b) {
 		return -1;
 	GraphEdge<T> temp(tempNodeA, tempNodeB);
 	return edges->find(&temp);
+}
+
+template <typename T>
+bool Graph<T>::getEdgeByIndex(int i, T *a, T *b) {
+	if (i < 0 || i > edges->getCount())
+		return false;
+	*a = edges->getData(i)->a->data;
+	*b = edges->getData(i)->b->data;
+	return true;
 }
 
 template <typename T>

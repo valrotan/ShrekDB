@@ -15,6 +15,11 @@ private:
 
 	bool cio, pio, nio, coo, poo, noo; // Characters In Open, Pos In Open...
 
+public:
+	Database(std::string charsPath, std::string posPath, std::string negPath)
+			: charsPath(charsPath), posPath(posPath), negPath(negPath) {}
+	~Database() { closeAll(); }
+
 	void closeAll() {
 		closeReadChars();
 		closeReadPos();
@@ -23,11 +28,6 @@ private:
 		closeWritePos();
 		closeWriteNeg();
 	}
-
-public:
-	Database(std::string charsPath, std::string posPath, std::string negPath)
-			: charsPath(charsPath), posPath(posPath), negPath(negPath) {}
-	~Database() { closeAll(); }
 
 	void openReadChars() {
 		closeReadChars();
@@ -53,11 +53,11 @@ public:
 		posIStream.open(posPath);
 		pio = true;
 	}
-	Database &readPos(int &a, int &b) {
+	bool readPos(int &a, int &b) {
 		if (!pio)
 			throw "File not open exception";
 		posIStream >> a >> b;
-		return *this;
+		return !posIStream.eof();
 	}
 	bool doneReadingPos() { return posIStream.eof(); }
 	void closeReadPos() {
@@ -71,11 +71,11 @@ public:
 		negIStream.open(negPath);
 		nio = true;
 	}
-	Database &readNeg(int &a, int &b) {
+	bool readNeg(int &a, int &b) {
 		if (!nio)
 			throw "File not open exception";
 		negIStream >> a >> b;
-		return *this;
+		return !negIStream.eof();
 	}
 	bool doneReadingNeg() { return negIStream.eof(); }
 	void closeReadNeg() {
@@ -108,10 +108,10 @@ public:
 		posOStream.open(posPath, std::ios_base::app);
 		poo = true;
 	}
-	Database &writePos(int &a, int &b) {
-		if (!pio)
+	Database &writePos(int a, int b) {
+		if (!poo)
 			throw "File not open exception";
-		posOStream << a << b;
+		posOStream << a << " " << b << "\n";
 		return *this;
 	}
 	void closeWritePos() {
@@ -125,10 +125,10 @@ public:
 		negOStream.open(negPath, std::ios_base::app);
 		noo = true;
 	}
-	Database &writeNeg(int &a, int &b) {
+	Database &writeNeg(int a, int b) {
 		if (!noo)
 			throw "File not open exception";
-		negOStream << a << b;
+		negOStream << a << " " << b << "\n";
 		return *this;
 	}
 	void closeWriteNeg() {

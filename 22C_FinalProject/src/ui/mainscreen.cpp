@@ -211,9 +211,9 @@ void MainScreen::loadData() {
 	db->closeReadChars();
 
 	db->openReadPos();
-	while (!db->doneReadingPos()) {
-		int a, b;
-		db->readPos(a, b);
+	int a, b;
+	while (db->readPos(a, b)) {
+		out << "Reading pos " << a << " " << b << "\n";
 		Character *ca = idTable->find(a);
 		Character *cb = idTable->find(b);
 		graph->addEdge(ca, cb, true);
@@ -221,26 +221,87 @@ void MainScreen::loadData() {
 	db->closeReadPos();
 
 	db->openReadNeg();
-	while (!db->doneReadingNeg()) {
-		int a, b;
-		db->readNeg(a, b);
+	while (db->readNeg(a, b)) {
+		out << "Reading neg " << a << " " << b << "\n";
 		Character *ca = idTable->find(a);
 		Character *cb = idTable->find(b);
-		graph->addEdge(ca, cb);
+		graph->addEdge(ca, cb, false);
 	}
 	db->closeReadNeg();
 }
 void MainScreen::addData() {
-	out << "Please enter data in the following format, separateed by tabs \n";
-	out << Character::getDBHeader();
-	out << "\n > ";
-	Character *c = new Character;
-	in >> *c;
+	out << "Would you like to add a new [c]haracter or [p]ositive/[n]egative "
+				 "relationship? \n> ";
+	char c;
+	in >> c;
+	c = std::tolower(c);
+	if (c == 'c') {
+		out << "Please enter data in the following format, separated by tabs \n";
+		out << Character::getDBHeader();
+		out << "\n > ";
+		Character *c = new Character;
+		in >> *c;
 
-	list->add(c);
-	table->insert(c->getName(), c);
-	bst->add(c);
-	graph->addNode(c);
+		list->add(c);
+		table->insert(c->getName(), c);
+		bst->add(c);
+		graph->addNode(c);
+	} else if (c == 'p' || c == 'n') {
+		out << "Please enter the two character names on two separate lines. \n> ";
+		std::string namea;
+		in.ignore(1024, '\n');
+		getline(in, namea);
+		out << "> ";
+		std::string nameb;
+		getline(in, nameb);
+
+		if (!table->contains(namea) || !table->contains(nameb)) {
+			out << "Characters not found.\n";
+			return;
+		}
+
+		Character *charA = table->find(namea);
+		Character *charB = table->find(nameb);
+
+		Character::setPrintStyle(CHARACTER_STYLE_SINGLE);
+		out << charA << std::endl << charB << std::endl;
+
+		out << "Confirm? \n[Y/n] > ";
+		char confirm;
+		in >> confirm;
+		if (std::tolower(confirm) == 'y') {
+			try {
+				graph->addEdge(charA, charB, c == 'p' ? true : false);
+			} catch (const char *e) {
+				out << e << std::endl;
+			}
+		} else {
+			out << "Cancelled new relationship. \n";
+		}
+	} else {
+		out << "Invalid option.\n";
+	}
+	writeData();
+}
+
+void MainScreen::writeRelationshipData() {
+	db->clearPos();
+	db->clearNeg();
+	db->openWritePos();
+	db->openWriteNeg();
+
+	int c = graph->countEdges();
+	for (int i = 0; i < c; i++) {
+		Character *a, *b;
+		graph->getEdgeByIndex(i, &a, &b);
+		if (graph->isEdgePositive(i)) {
+			db->writePos(a->getId(), b->getId());
+		} else {
+			db->writeNeg(a->getId(), b->getId());
+		}
+	}
+	db->closeWritePos();
+	db->closeWriteNeg();
 }
 
 void MainScreen::writeData() {
@@ -249,6 +310,7 @@ void MainScreen::writeData() {
 	db->openWriteChars();
 	table->dbPrint(db->getCharOStream());
 	db->closeWriteChars();
+	writeRelationshipData();
 }
 
 void MainScreen::removeData() {
