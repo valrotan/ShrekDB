@@ -213,7 +213,6 @@ void MainScreen::loadData() {
 	db->openReadPos();
 	int a, b;
 	while (db->readPos(a, b)) {
-		out << "Reading pos " << a << " " << b << "\n";
 		Character *ca = idTable->find(a);
 		Character *cb = idTable->find(b);
 		graph->addEdge(ca, cb, true);
@@ -222,7 +221,6 @@ void MainScreen::loadData() {
 
 	db->openReadNeg();
 	while (db->readNeg(a, b)) {
-		out << "Reading neg " << a << " " << b << "\n";
 		Character *ca = idTable->find(a);
 		Character *cb = idTable->find(b);
 		graph->addEdge(ca, cb, false);
@@ -272,6 +270,7 @@ void MainScreen::addData() {
 		if (std::tolower(confirm) == 'y') {
 			try {
 				graph->addEdge(charA, charB, c == 'p' ? true : false);
+				out << "Relationship added successfully. \n";
 			} catch (const char *e) {
 				out << e << std::endl;
 			}
@@ -314,34 +313,76 @@ void MainScreen::writeData() {
 }
 
 void MainScreen::removeData() {
-	out << "Please enter the name of the character to remove. \n> ";
-	std::string name;
-	in.ignore(1024, '\n');
-	getline(in, name);
-	if (!table->contains(name)) {
-		out << Color(_ERROR)
-				<< "Character not found. Please press any button and try again. \n"
-				<< Color(RESET);
-		std::string buf;
-		getline(in, buf);
-		IOUtil::clearScreen();
-		return;
-	}
-	Character *c = table->find(name);
-	Character::setPrintStyle(CHARACTER_STYLE_SINGLE);
-	out << c;
-	out << "Confirm remove?\n [Y/n]: ";
-	char confirm;
-	in >> confirm;
-	if (confirm == 'y' || confirm == 'Y') {
-		table->remove(c->getName());
-		bst->remove(c);
-		graph->removeNode(c);
-		delete list->remove(list->find(c));
-		out << "remove successful\n";
+	out << "Would you like to remove a [c]haracter or [r]elationship? \n> ";
+	char c;
+	in >> c;
+	c = std::tolower(c);
+	if (c == 'c') {
+		out << "Please enter the name of the character to remove. \n> ";
+		std::string name;
+		in.ignore(1024, '\n');
+		getline(in, name);
+		if (!table->contains(name)) {
+			out << Color(_ERROR)
+					<< "Character not found. Please press any button and try again. \n"
+					<< Color(RESET);
+			std::string buf;
+			getline(in, buf);
+			IOUtil::clearScreen();
+			return;
+		}
+		Character *c = table->find(name);
+		Character::setPrintStyle(CHARACTER_STYLE_SINGLE);
+		out << c;
+		out << "Confirm remove?\n [Y/n]: ";
+		char confirm;
+		in >> confirm;
+		if (confirm == 'y' || confirm == 'Y') {
+			table->remove(c->getName());
+			bst->remove(c);
+			graph->removeNode(c);
+			delete list->remove(list->find(c));
+			out << "remove successful\n";
+		} else {
+			out << "cancelled remove \n";
+		}
+	} else if (c == 'r') {
+		out << "Please enter the two character names on two separate lines. \n> ";
+		std::string namea;
+		in.ignore(1024, '\n');
+		getline(in, namea);
+		out << "> ";
+		std::string nameb;
+		getline(in, nameb);
+
+		if (!table->contains(namea) || !table->contains(nameb)) {
+			out << "Characters not found.\n";
+			return;
+		}
+
+		Character *charA = table->find(namea);
+		Character *charB = table->find(nameb);
+
+		Character::setPrintStyle(CHARACTER_STYLE_SINGLE);
+		out << charA << std::endl << charB << std::endl;
+
+		out << "Confirm remove relationship? \n[Y/n] > ";
+		char confirm;
+		in >> confirm;
+		if (std::tolower(confirm) == 'y') {
+			try {
+				graph->removeEdge(charA, charB);
+				out << "Relationship removed successfully. \n";
+			} catch (const char *e) {
+				out << e << std::endl;
+			}
+		} else {
+			out << "Cancelled remove relationship. \n";
+		}
 	} else {
-		out << "cancelled remove \n";
+		out << "Invalid option.\n";
 	}
+	writeData();
 }
 
 void MainScreen::findData() {
