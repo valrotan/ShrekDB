@@ -120,7 +120,7 @@ void MainScreen::interact() {
 					out << "-";
 				}
 			}
-			out << "\n";
+			out << "\n"; 
 			out << *list;
 
 			in.ignore();
@@ -299,22 +299,22 @@ void MainScreen::findData() {
 	Character::setPrintStyle(CHARACTER_STYLE_SINGLE);
 
 	Character *c = table->find(name);
-	out << "Table result: \n";
+	out << "Search result: \n";
 	out << c;
 
-	c = bst->search(c);
-	out << "BST result: \n";
-	out << c;
+	//c = bst->search(c);
+	//out << "BST result: \n";
+	//out << c;
 
-	c = list->getData(list->find(c));
-	out << "List result: \n";
-	out << c;
+	//c = list->getData(list->find(c));
+	//out << "List result: \n";
+	//out << c;
 
-	try {
-		c = graph->getNode(c);
-		out << "Graph result: \n";
-		out << c;
-	} catch (const char *e) {
-		out << e << std::endl;
-	}
+	//try {
+	//	c = graph->getNode(c);
+	//	out << "Graph result: \n";
+	//	out << c;
+	//} catch (const char *e) {
+	//	out << e << std::endl;
+	//}
 }
