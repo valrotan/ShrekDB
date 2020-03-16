@@ -15,24 +15,58 @@ void Converter::interact() {
 		out << "Enter a name to convert to:\n> ";
 		std::string name;
 		in >> name;
-		Character* c = this->table->find(name);
+		Character* c;
+		try {
+			c = this->table->find(name);
+		}
+		catch (...) {
+			out << Color(_ERROR) << "Character wasn't found, try again..." << Color(RESET) << std::endl;
+			in.ignore();
+			in.clear();
+			getchar();
+			throw "Converter Error: Character wasn't found, try again...";
+		}
 		CHARACTER_PROPERTY prop = CHARACTER_HEIGHT;
 		switch (selection) {
 		case 1:
 			prop = CHARACTER_HEIGHT;
+			break;
 		case 2:
 			prop = CHARACTER_MASS;
+			break;
 		case 3:
 			prop = CHARACTER_BMI;
+			break;
 		case 4:
 			prop = CHARACTER_AGE;
+			break;
 		}
-		convert(prop, input, c);
+		double resp = convert(prop, input, c);
+		out << std::endl << Color(BLUE,BRIGHT_GRAY) << "Conversion results: " << Color(RESET) << std::endl;
+		switch (prop) {
+		case CHARACTER_HEIGHT:
+			out << "Result: " << resp << " " << Color(GREEN) << c->getName() << "ometers" << Color(RESET) << std::endl;
+			break;
+		case CHARACTER_MASS:
+			out << "Result: " << resp << " " << Color(GREEN) << c->getName() << "ograms" << Color(RESET) << std::endl;
+			break;
+		case CHARACTER_BMI:
+			out << "Result: " << resp << " " << Color(GREEN) << c->getName() << "o bmi" << Color(RESET) << std::endl;
+			break;
+		case CHARACTER_AGE:
+			out << "Result: " << (int)resp << " " << Color(GREEN) << c->getName() << "o years" << Color(RESET) << std::endl;
+			break;
+		}
+		
 
 	}
 	else {
 		out << Color(_ERROR) << "Invalid Selection, Try again..." << Color(RESET) << std::endl;
-		return;
+		while ((getchar()) != '\n');
+		in.ignore();
+		in.clear();
+		getchar();
+		throw "Converter Error: Invalid Selection, Try again...";
 	}
 }
 

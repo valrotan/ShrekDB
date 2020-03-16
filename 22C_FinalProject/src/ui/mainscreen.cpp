@@ -182,7 +182,13 @@ void MainScreen::interact() {
 				<< std::endl
 				<< std::endl;
 
-			converter->interact();
+			try {
+				converter->interact();
+			}
+			catch (...) {
+				IOUtil::clearScreen();
+				continue;
+			}
 
 			in.ignore();
 			getline(in, temp);
