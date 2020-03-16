@@ -49,12 +49,12 @@ void MainScreen::interact() {
 		out << "Please select an option from the menu below: \n"
 					 " x [1] Add new data \n"
 					 " x [2] Delete data \n"
-					 " x [3] Search and display data using the primary key \n"
-					 " x [4] List data in hash table sequence \n"
-					 " x [5] List data in sorted key sequence \n"
-					 " x [6] Print indented tree \n"
-					 " x [7] Print pretty graph \n"
-					 " x [8] Efficiency \n"
+					 " x [3] Find characters by name \n"
+					 " x [4] Display hash table by name \n"
+					 " x [5] List characters by age \n"
+					 " x [6] Display BST by occupation \n"
+					 " x [7] Display relationship graph \n"
+					 " x [8] Show algorithm efficiency \n"
 					 "  [9] <Team choice menu option> \n"
 					 " x [0] Quit \n"
 					 "> ";
@@ -120,7 +120,7 @@ void MainScreen::interact() {
 					out << "-";
 				}
 			}
-			out << "\n"; 
+			out << "\n";
 			out << *list;
 
 			in.ignore();
@@ -405,15 +405,15 @@ void MainScreen::findData() {
 	out << "Search result: \n";
 	out << c;
 
-	//c = bst->search(c);
-	//out << "BST result: \n";
-	//out << c;
+	// c = bst->search(c);
+	// out << "BST result: \n";
+	// out << c;
 
-	//c = list->getData(list->find(c));
-	//out << "List result: \n";
-	//out << c;
+	// c = list->getData(list->find(c));
+	// out << "List result: \n";
+	// out << c;
 
-	//try {
+	// try {
 	//	c = graph->getNode(c);
 	//	out << "Graph result: \n";
 	//	out << c;
