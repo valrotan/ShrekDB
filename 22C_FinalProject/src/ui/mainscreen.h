@@ -5,6 +5,7 @@
 #include "../character/database.h"
 #include "../dataStructs/dataStructs.h"
 #include "interactive.h"
+#include "../util/converter.h"
 
 class MainScreen : Interactive {
 private:
@@ -13,6 +14,7 @@ private:
 	LinkedList<Character *> *list;
 	BST<Character *> *bst;
 	Graph<Character *> *graph;
+	Converter* converter;
 
 	Database *db;
 
@@ -26,7 +28,6 @@ private:
 	void findData();
 	void addData();
 	void removeData();
-	void printEfficiency(std::ostream&);
 
 public:
 	MainScreen(std::istream &tin, std::ostream &tout);

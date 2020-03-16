@@ -17,6 +17,8 @@ MainScreen::MainScreen(std::istream &tin, std::ostream &tout)
 
 		db = new Database(charPath, posPath, negPath);
 
+		converter = new Converter(tin, tout, table);
+
 		loadData();
 	} catch (const char *e) {
 		out << e;
@@ -55,7 +57,7 @@ void MainScreen::interact() {
 					 " x [6] Display BST by occupation \n"
 					 " x [7] Display relationship graph \n"
 					 " x [8] Show algorithm efficiency \n"
-					 "  [9] <Team choice menu option> \n"
+					 " x [9] <Team choice menu option> \n"
 					 " x [0] Quit \n"
 					 "> ";
 
@@ -174,6 +176,18 @@ void MainScreen::interact() {
 			in.ignore();
 			getline(in, temp);
 			IOUtil::clearScreen();
+			break;
+		case 9: // list hash table
+			out << Color(GREEN, BRIGHT_GRAY) << "SHREK" << Color(BLUE, BRIGHT_GRAY)<<" Converter" <<  Color(RESET)
+				<< std::endl
+				<< std::endl;
+
+			converter->interact();
+
+			in.ignore();
+			getline(in, temp);
+			IOUtil::clearScreen();
+
 			break;
 		case 0: // done
 			done = true;
