@@ -14,7 +14,9 @@ void Converter::interact() {
 		in >> input;
 		out << "Enter a name to convert to:\n> ";
 		std::string name;
-		in >> name;
+		in.ignore();
+		in.clear();
+		getline(in, name);
 		Character* c;
 		try {
 			c = this->table->find(name);
@@ -23,7 +25,6 @@ void Converter::interact() {
 			out << Color(_ERROR) << "Character wasn't found, try again..." << Color(RESET) << std::endl;
 			in.ignore();
 			in.clear();
-			getchar();
 			throw "Converter Error: Character wasn't found, try again...";
 		}
 		CHARACTER_PROPERTY prop = CHARACTER_HEIGHT;

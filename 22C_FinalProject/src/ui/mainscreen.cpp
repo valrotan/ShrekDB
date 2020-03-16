@@ -57,7 +57,7 @@ void MainScreen::interact() {
 					 " x [6] Display BST by occupation \n"
 					 " x [7] Display relationship graph \n"
 					 " x [8] Show algorithm efficiency \n"
-					 " x [9] <Team choice menu option> \n"
+					 " x [9] SHREK Converter \n"
 					 " x [0] Quit \n"
 					 "> ";
 
@@ -191,7 +191,7 @@ void MainScreen::interact() {
 			}
 
 			in.ignore();
-			getline(in, temp);
+			//getline(in, temp);
 			IOUtil::clearScreen();
 
 			break;
@@ -424,20 +424,4 @@ void MainScreen::findData() {
 	Character *c = table->find(name);
 	out << "Search result: \n";
 	out << c;
-
-	// c = bst->search(c);
-	// out << "BST result: \n";
-	// out << c;
-
-	// c = list->getData(list->find(c));
-	// out << "List result: \n";
-	// out << c;
-
-	// try {
-	//	c = graph->getNode(c);
-	//	out << "Graph result: \n";
-	//	out << c;
-	//} catch (const char *e) {
-	//	out << e << std::endl;
-	//}
 }
