@@ -17,5 +17,6 @@ int main() {
 	// runGraphTests();
 	//	runTableTests();
 	//	runUtilTests();
-	dbtests();
+	//dbtests();
+	
 }
