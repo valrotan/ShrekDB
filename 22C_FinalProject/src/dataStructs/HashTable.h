@@ -66,7 +66,7 @@ public:
 
 template <typename K, typename T>
 HashTable<K, T>::HashTable(const Hasher<K> &h) {
-	size = 10;
+	size = 11;
 	listLengths = new int[size]{};
 	comparator = new GenericComparator<K>;
 	table = new LinkedList<const HashtableUnit<K, T> *> *[size];
