@@ -20,138 +20,39 @@ public:
 			: charsPath(charsPath), posPath(posPath), negPath(negPath) {}
 	~Database() { closeAll(); }
 
-	void closeAll() {
-		closeReadChars();
-		closeReadPos();
-		closeReadNeg();
-		closeWriteChars();
-		closeWritePos();
-		closeWriteNeg();
-	}
+	void closeAll();
 
-	void openReadChars() {
-		closeReadChars();
-		charIStream.open(charsPath);
-		charIStream.ignore(1000, '\n');
-		cio = true;
-	}
-	Database &operator>>(Character &c) {
-		if (!cio)
-			throw "File not open exception";
-		charIStream >> c;
-		return *this;
-	}
+	void openReadChars();
+	Database &operator>>(Character &c);
 	bool doneReadingChars() { return charIStream.eof(); }
-	void closeReadChars() {
-		if (cio)
-			charIStream.close();
-		cio = false;
-	}
+	void closeReadChars();
 
-	void openReadPos() {
-		closeReadPos();
-		posIStream.open(posPath);
-		pio = true;
-	}
-	bool readPos(int &a, int &b) {
-		if (!pio)
-			throw "File not open exception";
-		posIStream >> a >> b;
-		return !posIStream.eof();
-	}
+	void openReadPos();
+	bool readPos(int &a, int &b);
 	bool doneReadingPos() { return posIStream.eof(); }
-	void closeReadPos() {
-		if (pio)
-			posIStream.close();
-		pio = false;
-	}
+	void closeReadPos();
 
-	void openReadNeg() {
-		closeReadNeg();
-		negIStream.open(negPath);
-		nio = true;
-	}
-	bool readNeg(int &a, int &b) {
-		if (!nio)
-			throw "File not open exception";
-		negIStream >> a >> b;
-		return !negIStream.eof();
-	}
+	void openReadNeg();
+	bool readNeg(int &a, int &b);
 	bool doneReadingNeg() { return negIStream.eof(); }
-	void closeReadNeg() {
-		if (nio)
-			negIStream.close();
-		nio = false;
-	}
+	void closeReadNeg();
 
-	void openWriteChars() {
-		closeWriteChars();
-		charOStream.open(charsPath, std::ios_base::app);
-		charOStream << Character::getDBHeader() << std::endl;
-		coo = true;
-	}
-	Database &operator<<(Character &c) {
-		if (!coo)
-			throw "File not open exception";
-		Character::setPrintStyle(CHARACTER_STYLE_DB);
-		charOStream << c << std::endl;
-		return *this;
-	}
-	void closeWriteChars() {
-		if (coo)
-			charOStream.close();
-		coo = false;
-	}
+	void openWriteChars();
+	Database &operator<<(Character &c);
+	void closeWriteChars();
 
-	void openWritePos() {
-		closeWritePos();
-		posOStream.open(posPath, std::ios_base::app);
-		poo = true;
-	}
-	Database &writePos(int a, int b) {
-		if (!poo)
-			throw "File not open exception";
-		posOStream << a << " " << b << "\n";
-		return *this;
-	}
-	void closeWritePos() {
-		if (poo)
-			posOStream.close();
-		poo = false;
-	}
+	void openWritePos();
+	Database &writePos(int a, int b);
+	void closeWritePos();
 
-	void openWriteNeg() {
-		closeWriteNeg();
-		negOStream.open(negPath, std::ios_base::app);
-		noo = true;
-	}
-	Database &writeNeg(int a, int b) {
-		if (!noo)
-			throw "File not open exception";
-		negOStream << a << " " << b << "\n";
-		return *this;
-	}
-	void closeWriteNeg() {
-		if (noo)
-			negOStream.close();
-		noo = false;
-	}
+	void openWriteNeg();
+	Database &writeNeg(int a, int b);
+	void closeWriteNeg();
 
-	void clearChars() {
-		charOStream.open(charsPath);
-		charOStream.clear();
-		charOStream.close();
-	}
-	void clearPos() {
-		posOStream.open(posPath);
-		posOStream.clear();
-		posOStream.close();
-	}
-	void clearNeg() {
-		negOStream.open(negPath);
-		negOStream.clear();
-		negOStream.close();
-	}
+	void clearChars();
+	void clearPos();
+	void clearNeg();
+
 	std::ifstream &getCharIStream();
 	std::ifstream &getPosIStream();
 	std::ifstream &getNegIStream();
