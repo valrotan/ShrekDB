@@ -4,9 +4,9 @@
 void Converter::interact() {
 	out << "What do you wish to convert?" << std::endl;
 	out << "length(" << Color(GREEN) << "1" << Color(RESET) << "), mass("
-			<< Color(GREEN) << 2 << Color(RESET) << "), bmi(" << Color(GREEN) << 3
-			<< Color(RESET) << "), age(" << Color(GREEN) << 4 << Color(RESET)
-			<< ")\n> ";
+		<< Color(GREEN) << 2 << Color(RESET) << "), bmi(" << Color(GREEN) << 3
+		<< Color(RESET) << "), age(" << Color(GREEN) << 4 << Color(RESET)
+		<< ")\n> ";
 	int selection = 0;
 	in >> selection;
 	if (in.fail()) {
@@ -30,12 +30,13 @@ void Converter::interact() {
 		in.ignore();
 		in.clear();
 		getline(in, name);
-		Character *c;
+		Character* c;
 		try {
 			c = this->table->find(name);
-		} catch (...) {
+		}
+		catch (...) {
 			out << Color(_ERROR) << "Character not found." << Color(RESET)
-					<< std::endl;
+				<< std::endl;
 			in.ignore(1024, '\n');
 			in.clear();
 			return;
@@ -60,35 +61,36 @@ void Converter::interact() {
 		}
 		double resp = convert(prop, input, c);
 		out << std::endl
-				<< Color(BLUE, BRIGHT_GRAY) << "Conversion results: " << Color(RESET)
-				<< std::endl;
+			<< Color(BLUE, BRIGHT_GRAY) << "Conversion results: " << Color(RESET)
+			<< std::endl;
 		switch (prop) {
 		case CHARACTER_HEIGHT:
 			out << "Result: " << resp << " " << Color(GREEN) << c->getName()
-					<< "ometers" << Color(RESET) << std::endl;
+				<< "ometers" << Color(RESET) << std::endl;
 			break;
 		case CHARACTER_MASS:
 			out << "Result: " << resp << " " << Color(GREEN) << c->getName()
-					<< "ograms" << Color(RESET) << std::endl;
+				<< "ograms" << Color(RESET) << std::endl;
 			break;
 		case CHARACTER_BMI:
 			out << "Result: " << resp << " " << Color(GREEN) << c->getName()
-					<< "o bmi" << Color(RESET) << std::endl;
+				<< "o bmi" << Color(RESET) << std::endl;
 			break;
 		case CHARACTER_AGE:
-			out << "Result: " << (int)resp << " " << Color(GREEN) << c->getName()
-					<< "o years" << Color(RESET) << std::endl;
+			out << "Result: " << resp << " " << Color(GREEN) << c->getName()
+				<< "o years" << Color(RESET) << std::endl;
 			break;
 		}
 
-	} else {
+	}
+	else {
 		out << Color(_ERROR) << "Invalid Selection." << Color(RESET) << std::endl;
 		in.ignore(1024, '\n');
 		return;
 	}
 }
 
-double Converter::convert(CHARACTER_PROPERTY prop, double from, Character *to) {
+double Converter::convert(CHARACTER_PROPERTY prop, double from, Character* to) {
 	switch (prop) {
 	case CHARACTER_HEIGHT:
 		return from / to->getHeight();
@@ -97,7 +99,7 @@ double Converter::convert(CHARACTER_PROPERTY prop, double from, Character *to) {
 	case CHARACTER_BMI:
 		return from / to->getBmi();
 	case CHARACTER_AGE:
-		return (int)from / to->getAge();
+		return (double)from / to->getAge();
 	default:
 		throw "Conversion error: can't convert this type!\n";
 	}
