@@ -63,7 +63,7 @@ enum COLOR {
 	RESET,
 	SUCCESS = BRIGHT_GREEN,
 	WARNING = YELLOW,
-	_ERROR = RED
+	_ERROR = BRIGHT_RED
 };
 
 class Color {

@@ -1,4 +1,5 @@
 #include "ioutil.h"
+#include "color.h"
 
 #include <iostream>
 

@@ -235,14 +235,6 @@ void Graph<T>::clear() {
 
 template <typename T>
 std::ostream &operator<<(std::ostream &out, Graph<T> &g) {
-	out << "Nodes\n";
-	out << *g.nodes << std::endl;
-
-	out << "Edges\n";
-	out << *g.edges << std::endl;
-
-	out << "Graph\n";
-
 	int rows = 5;
 
 	for (int i = 0; i < g.nodes->getCount(); i++) {

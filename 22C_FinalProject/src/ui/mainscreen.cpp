@@ -21,7 +21,7 @@ MainScreen::MainScreen(std::istream &tin, std::ostream &tout)
 
 		loadData();
 	} catch (const char *e) {
-		out << e;
+		out << Color(_ERROR) << e << Color(RESET) << std::endl;
 	}
 }
 
@@ -42,6 +42,7 @@ MainScreen::~MainScreen() {
 
 void MainScreen::interact() {
 
+	IOUtil::clearScreen();
 	out << "Welcome to " << Color(GREEN) << "ShrekDB" << Color(RESET) << "! \n\n";
 
 	int option;
@@ -62,54 +63,59 @@ void MainScreen::interact() {
 					 "> ";
 
 		in >> option;
-		out << std::endl;
+		if (in.fail()) {
+			option = -1;
+			in.clear();
+		}
 		std::string temp;
 
-		IOUtil::clearScreen();
 		switch (option) {
+
 		case 1: // add data
+			IOUtil::clearScreen();
 			out << Color(BLUE, BRIGHT_GRAY) << "Add" << Color(RESET) << std::endl
 					<< std::endl;
 			addData();
 
-			in.ignore();
-			getline(in, temp);
+			in.ignore(1024, '\n');
 			IOUtil::clearScreen();
-
 			break;
+
 		case 2: // delete data
+			IOUtil::clearScreen();
 			out << Color(BLUE, BRIGHT_GRAY) << "Delete" << Color(RESET) << std::endl
 					<< std::endl;
 			removeData();
 
-			in.ignore();
-			getline(in, temp);
+			in.ignore(1024, '\n');
 			IOUtil::clearScreen();
-
 			break;
+
 		case 3: // find data
+			IOUtil::clearScreen();
 			out << Color(BLUE, BRIGHT_GRAY) << "Find" << Color(RESET) << std::endl
 					<< std::endl;
 			findData();
 
-			in.ignore();
-			getline(in, temp);
+			in.ignore(1024, '\n');
 			IOUtil::clearScreen();
-
 			break;
+
 		case 4: // list hash table
+			IOUtil::clearScreen();
 			out << Color(BLUE, BRIGHT_GRAY) << "Hashtable" << Color(RESET)
 					<< std::endl
 					<< std::endl;
 			Character::setPrintStyle(CHARACTER_STYLE_NAME);
 			out << *table;
 
-			in.ignore();
-			getline(in, temp);
+			in.ignore(1024, '\n');
+			in.ignore(1024, '\n');
 			IOUtil::clearScreen();
-
 			break;
+
 		case 5: // list in sorted key
+			IOUtil::clearScreen();
 			out << Color(BLUE, BRIGHT_GRAY) << "Sorted Key - Age" << Color(RESET)
 					<< std::endl
 					<< std::endl;
@@ -125,11 +131,13 @@ void MainScreen::interact() {
 			out << "\n";
 			out << *list;
 
-			in.ignore();
-			getline(in, temp);
+			in.ignore(1024, '\n');
+			in.ignore(1024, '\n');
 			IOUtil::clearScreen();
 			break;
+
 		case 6: // print tree
+			IOUtil::clearScreen();
 			out << Color(BLUE, BRIGHT_GRAY) << "Tree - Occupation" << Color(RESET)
 					<< std::endl
 					<< std::endl;
@@ -137,76 +145,84 @@ void MainScreen::interact() {
 			bst->setOrder(BST_PRETTY_PREORDER);
 			out << *bst << std::endl;
 
-			in.ignore();
-			getline(in, temp);
+			in.ignore(1024, '\n');
+			in.ignore(1024, '\n');
 			IOUtil::clearScreen();
-
 			break;
+
 		case 7: // print graph
+			IOUtil::clearScreen();
 			out << Color(BLUE, BRIGHT_GRAY) << "Graph" << Color(RESET) << std::endl
 					<< std::endl;
 			Character::setPrintStyle(CHARACTER_STYLE_NAME);
-			out << *graph << std::endl;
+			out << *graph;
 
-			in.ignore();
-			getline(in, temp);
+			in.ignore(1024, '\n');
+			in.ignore(1024, '\n');
 			IOUtil::clearScreen();
-
 			break;
+
 		case 8: // print efficiency
+			IOUtil::clearScreen();
 			out << Color(BLUE, BRIGHT_GRAY) << "Efficiency" << Color(RESET)
 					<< std::endl
 					<< std::endl;
 			out << Color(WHITE) << "\tHashtable: " << Color(RESET) << std::endl;
-			out << Color(BRIGHT_GRAY) << "\t\tLoad Factor: " << Color(RESET)
-					<< table->getLoad() << std::endl;
-			out << Color(BRIGHT_GRAY) << "\t\tLongest Linked List: " << Color(RESET)
-					<< table->getMaxListSize() << std::endl;
+			out << Color(BRIGHT_GRAY) << "\t\tLoad Factor: " << Color(GREEN)
+					<< table->getLoad() << Color(RESET) << std::endl;
+			out << Color(BRIGHT_GRAY) << "\t\tLongest Linked List: " << Color(GREEN)
+					<< table->getMaxListSize() << Color(RESET) << std::endl;
 			out << Color(BRIGHT_GRAY)
-					<< "\t\tAverage number of nodes in linked lists: " << Color(RESET)
-					<< table->getAverageNumNodes() << std::endl;
+					<< "\t\tAverage number of nodes in linked lists: " << Color(GREEN)
+					<< table->getAverageNumNodes() << Color(RESET) << std::endl;
 			out << Color(WHITE) << "\tBST: " << Color(RESET) << std::endl;
 			out << Color(BRIGHT_GRAY)
-					<< "\t\tAverage number of operations in inserts: " << Color(RESET)
-					<< bst->getAverageInsertions() << std::endl;
+					<< "\t\tAverage number of operations in inserts: " << Color(GREEN)
+					<< bst->getAverageInsertions() << Color(RESET) << std::endl;
 			out << Color(BRIGHT_GRAY)
-					<< "\t\tAverage number of operations in finds: " << Color(RESET)
-					<< bst->getAverageFinds() << std::endl
+					<< "\t\tAverage number of operations in finds: " << Color(GREEN)
+					<< bst->getAverageFinds() << Color(RESET) << std::endl
 					<< std::endl;
-			in.ignore();
-			getline(in, temp);
+
+			in.ignore(1024, '\n');
+			in.ignore(1024, '\n');
 			IOUtil::clearScreen();
 			break;
+
 		case 9: // list hash table
-			out << Color(GREEN, BRIGHT_GRAY) << "SHREK" << Color(BLUE, BRIGHT_GRAY)<<" Converter" <<  Color(RESET)
-				<< std::endl
-				<< std::endl;
+			IOUtil::clearScreen();
+			out << Color(GREEN, BRIGHT_GRAY) << "SHREK" << Color(BLUE, BRIGHT_GRAY)
+					<< " Converter" << Color(RESET) << std::endl
+					<< std::endl;
 
 			try {
 				converter->interact();
-			}
-			catch (...) {
+			} catch (const char *e) {
+				out << Color(_ERROR) << e << Color(RESET);
+				in.ignore(1024, '\n');
 				IOUtil::clearScreen();
 				continue;
 			}
 
-			in.ignore();
-			//getline(in, temp);
+			in.ignore(1024, '\n');
 			IOUtil::clearScreen();
+			break;
 
-			break;
 		case 0: // done
+			IOUtil::clearScreen();
 			done = true;
-			out << "Thanks for using " << Color(GREEN) << "ShrekDB" << Color(RESET)
-					<< "! \n";
+			out << "\n\nThanks for using " << Color(GREEN) << "ShrekDB"
+					<< Color(RESET) << "! \n\n";
+			in.ignore(1024, '\n');
+			in.ignore(1024, '\n');
 			break;
+
 		default:
+			in.ignore(1024, '\n');
 			out << Color(_ERROR)
 					<< "Invalid option. Please press any button and try again. \n"
 					<< Color(RESET);
-			std::string buf;
-			in.ignore();
-			getline(in, buf);
+			in.ignore(1024, '\n');
 			IOUtil::clearScreen();
 			break;
 		}
@@ -247,6 +263,7 @@ void MainScreen::loadData() {
 	}
 	db->closeReadNeg();
 }
+
 void MainScreen::addData() {
 	out << "Would you like to add a new [c]haracter or [p]ositive/[n]egative "
 				 "relationship? \n> ";
@@ -260,10 +277,20 @@ void MainScreen::addData() {
 		Character *c = new Character;
 		in >> *c;
 
-		list->add(c);
-		table->insert(c->getName(), c);
-		bst->add(c);
-		graph->addNode(c);
+		out << c << std::endl;
+
+		out << "Confirm? \n[Y/n]: ";
+		char confirm;
+		in >> confirm;
+		if (std::tolower(confirm) == 'y') {
+
+			list->add(c);
+			table->insert(c->getName(), c);
+			bst->add(c);
+			graph->addNode(c);
+		} else {
+			out << "Operation cancelled\n";
+		}
 	} else if (c == 'p' || c == 'n') {
 		out << "Please enter the two character names on two separate lines. \n> ";
 		std::string namea;
@@ -284,23 +311,25 @@ void MainScreen::addData() {
 		Character::setPrintStyle(CHARACTER_STYLE_SINGLE);
 		out << charA << std::endl << charB << std::endl;
 
-		out << "Confirm? \n[Y/n] > ";
+		out << "Confirm? \n[Y/n]: ";
 		char confirm;
 		in >> confirm;
 		if (std::tolower(confirm) == 'y') {
 			try {
 				graph->addEdge(charA, charB, c == 'p' ? true : false);
-				out << "Relationship added successfully. \n";
+				out << Color(SUCCESS) << "Relationship added successfully. \n"
+						<< Color(RESET);
 			} catch (const char *e) {
-				out << e << std::endl;
+				out << Color(_ERROR) << e << Color(RESET) << std::endl;
 			}
 		} else {
-			out << "Cancelled new relationship. \n";
+			out << "Operation cancelled. \n";
 		}
 	} else {
-		out << "Invalid option.\n";
+		out << Color(_ERROR) << "Invalid option.\n" << Color(RESET);
 	}
 	writeData();
+	in.ignore(1024, '\n');
 }
 
 void MainScreen::writeRelationshipData() {
@@ -333,7 +362,9 @@ void MainScreen::writeData() {
 }
 
 void MainScreen::removeData() {
-	out << "Would you like to remove a [c]haracter or [r]elationship? \n> ";
+	out << "Would you like to remove a [" << Color(GREEN) << "c" << Color(RESET)
+			<< "]haracter or [" << Color(GREEN) << "r" << Color(RESET)
+			<< "]elationship? \n> ";
 	char c;
 	in >> c;
 	c = std::tolower(c);
@@ -342,13 +373,9 @@ void MainScreen::removeData() {
 		std::string name;
 		in.ignore(1024, '\n');
 		getline(in, name);
+
 		if (!table->contains(name)) {
-			out << Color(_ERROR)
-					<< "Character not found. Please press any button and try again. \n"
-					<< Color(RESET);
-			std::string buf;
-			getline(in, buf);
-			IOUtil::clearScreen();
+			out << Color(_ERROR) << "Character not found. \n" << Color(RESET);
 			return;
 		}
 		Character *c = table->find(name);
@@ -362,9 +389,10 @@ void MainScreen::removeData() {
 			bst->remove(c);
 			graph->removeNode(c);
 			delete list->remove(list->find(c));
-			out << "remove successful\n";
+			out << Color(SUCCESS) << "Character removed successfully. \n"
+					<< Color(RESET);
 		} else {
-			out << "cancelled remove \n";
+			out << "Operation cancelled. \n";
 		}
 	} else if (c == 'r') {
 		out << "Please enter the two character names on two separate lines. \n> ";
@@ -376,7 +404,7 @@ void MainScreen::removeData() {
 		getline(in, nameb);
 
 		if (!table->contains(namea) || !table->contains(nameb)) {
-			out << "Characters not found.\n";
+			out << Color(RESET) << "Characters not found.\n" << Color(RESET);
 			return;
 		}
 
@@ -386,23 +414,25 @@ void MainScreen::removeData() {
 		Character::setPrintStyle(CHARACTER_STYLE_SINGLE);
 		out << charA << std::endl << charB << std::endl;
 
-		out << "Confirm remove relationship? \n[Y/n] > ";
+		out << "Confirm remove relationship? \n[Y/n]: ";
 		char confirm;
 		in >> confirm;
 		if (std::tolower(confirm) == 'y') {
 			try {
 				graph->removeEdge(charA, charB);
-				out << "Relationship removed successfully. \n";
+				out << Color(SUCCESS) << "Relationship removed successfully. \n"
+						<< Color(RESET);
 			} catch (const char *e) {
-				out << e << std::endl;
+				out << Color(_ERROR) << e << Color(RESET) << std::endl;
 			}
 		} else {
-			out << "Cancelled remove relationship. \n";
+			out << "Operation cancelled. \n";
 		}
 	} else {
-		out << "Invalid option.\n";
+		out << Color(_ERROR) << "Invalid option. \n" << Color(RESET);
 	}
 	writeData();
+	in.ignore(1024, '\n');
 }
 
 void MainScreen::findData() {
@@ -411,12 +441,7 @@ void MainScreen::findData() {
 	in.ignore(1024, '\n');
 	getline(in, name);
 	if (!table->contains(name)) {
-		out << Color(_ERROR)
-				<< "Character not found. Please press any button and try again. \n"
-				<< Color(RESET);
-		std::string buf;
-		getline(in, buf);
-		IOUtil::clearScreen();
+		out << Color(_ERROR) << "Character not found. \n" << Color(RESET);
 		return;
 	}
 	Character::setPrintStyle(CHARACTER_STYLE_SINGLE);
