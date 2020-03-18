@@ -4,10 +4,6 @@
 
 CHARACTER_STYLE Character::printStyle = CHARACTER_STYLE_TABLE;
 
-int Character::getId() const { return id; }
-
-void Character::setId(int value) { id = value; }
-
 Character::Character(int id,                 //
 										 std::string name,       //
 										 std::string species,    //
@@ -16,17 +12,22 @@ Character::Character(int id,                 //
 										 std::string color,      //
 										 double height,          //
 										 double mass,            //
-										 double bmi,             //
 										 int age)
 		: id(id), name(name), species(species), gender(gender),
 			occupation(occupation), color(color), height(height), mass(mass),
-			bmi(bmi), age(age) {}
+			age(age) {
+	calcBmi();
+}
 
 std::string Character::getTableHeader() {
 	return "    ID |                     NAME |          SPECIES |      "
 				 "     GENDER |       OCCUPATION |        COLOR |  AGE | "
 				 "  MASS | HEIGHT ";
 }
+
+int Character::getId() const { return id; }
+
+void Character::setId(int value) { id = value; }
 
 bool operator==(const Character &a, const Character &b) {
 	return a.id == b.id &&                 //
@@ -130,6 +131,7 @@ std::istream &operator>>(std::istream &in, Character &c) {
 	std::getline(in, c.color, '\t');
 	in >> c.age >> c.height >> c.mass;
 	//	in.ignore(256, '\n');
+	c.calcBmi();
 	return in;
 }
 

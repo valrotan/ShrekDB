@@ -12,12 +12,12 @@ void utilTest() {
 	cout << "running util tests...\n";
 
 	Character *c1 = new Character(1, "john doe", "dog", "male", "c teacher",
-																"orange", 1.34, 34, 0, 4);
+																"orange", 1.34, 34, 4);
 	Character *c2 = new Character(1, "john doe", "dog", "male", "c teacher",
-																"orange", 1.34, 34, 0, 4);
+																"orange", 1.34, 34, 4);
 	cout << "Character == " << (*c1 == *c2) << endl;
 	Character *c3 = new Character(2, "john d", "dog", "male", "c teacher",
-																"orange", 1.34, 34, 0, 4);
+																"orange", 1.34, 34, 4);
 	CharacterPointerComparator cpc(CHARACTER_ID);
 	GraphNodePointerComparator<Character *> gnpc(cpc);
 

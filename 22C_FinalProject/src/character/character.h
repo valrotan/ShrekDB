@@ -65,7 +65,6 @@ public:
 						std::string color = "",      //
 						double height = 0,           //
 						double mass = 0,             //
-						double bmi = 0,              //
 						int age = 0);
 
 	static std::string getTableHeader();

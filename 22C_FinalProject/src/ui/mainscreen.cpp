@@ -167,7 +167,9 @@ void MainScreen::interact() {
 			out << Color(BLUE, BRIGHT_GRAY) << "Efficiency" << Color(RESET)
 					<< std::endl
 					<< std::endl;
-			out << Color(WHITE) << "Number of characters: " << Color(RESET) << this->list->getCount() << std::endl << std::endl;
+			out << Color(WHITE) << "Number of characters: " << Color(RESET)
+					<< this->list->getCount() << std::endl
+					<< std::endl;
 			out << Color(WHITE) << "\tHashtable: " << Color(RESET) << std::endl;
 			out << Color(BRIGHT_GRAY) << "\t\tLoad Factor: " << Color(GREEN)
 					<< table->getLoad() << Color(RESET) << std::endl;
@@ -278,6 +280,19 @@ void MainScreen::addData() {
 		Character *c = new Character;
 		in >> *c;
 
+		if (table->contains(c->getName())) {
+			out << Color(_ERROR) << "Duplicate name not allowed." << Color(RESET)
+					<< std::endl;
+			in.ignore(1024, '\n');
+			return;
+		}
+		if (idTable->contains(c->getId())) {
+			out << Color(_ERROR) << "Duplicate id not allowed." << Color(RESET)
+					<< std::endl;
+			in.ignore(1024, '\n');
+			return;
+		}
+
 		Character::setPrintStyle(CHARACTER_STYLE_SINGLE);
 		out << c << std::endl;
 
@@ -288,6 +303,7 @@ void MainScreen::addData() {
 
 			list->add(c);
 			table->insert(c->getName(), c);
+			idTable->insert(c->getId(), c);
 			bst->add(c);
 			graph->addNode(c);
 			out << Color(SUCCESS) << "Character added successfully. \n"
@@ -390,6 +406,7 @@ void MainScreen::removeData() {
 		in >> confirm;
 		if (confirm == 'y' || confirm == 'Y') {
 			table->remove(c->getName());
+			idTable->remove(c->getId());
 			bst->remove(c);
 			graph->removeNode(c);
 			delete list->remove(list->find(c));
