@@ -167,6 +167,7 @@ void MainScreen::interact() {
 			out << Color(BLUE, BRIGHT_GRAY) << "Efficiency" << Color(RESET)
 					<< std::endl
 					<< std::endl;
+			out << Color(WHITE) << "Number of characters: " << Color(RESET) << this->list->getCount() << std::endl << std::endl;
 			out << Color(WHITE) << "\tHashtable: " << Color(RESET) << std::endl;
 			out << Color(BRIGHT_GRAY) << "\t\tLoad Factor: " << Color(GREEN)
 					<< table->getLoad() << Color(RESET) << std::endl;
