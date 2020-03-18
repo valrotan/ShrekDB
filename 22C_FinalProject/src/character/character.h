@@ -70,7 +70,7 @@ public:
 
 	static std::string getTableHeader();
 	static std::string getDBHeader() {
-		return "id	name	species	sex	occupation	color	age	size	mass	bmi";
+		return "id	name	species	sex	occupation	color	age	size	mass";
 	}
 
 	friend bool operator==(const Character &a, const Character &b);
@@ -100,7 +100,7 @@ public:
 	double getMass() const;
 	void setMass(double value);
 	double getBmi() const;
-	void setBmi(double value);
+	void calcBmi();
 	int getAge() const;
 	void setAge(int value);
 	static void setPrintStyle(const CHARACTER_STYLE &value);

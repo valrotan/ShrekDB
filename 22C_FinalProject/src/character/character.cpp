@@ -25,7 +25,7 @@ Character::Character(int id,                 //
 std::string Character::getTableHeader() {
 	return "    ID |                     NAME |          SPECIES |      "
 				 "     GENDER |       OCCUPATION |        COLOR |  AGE | "
-				 "  MASS | HEIGHT |    BMI ";
+				 "  MASS | HEIGHT ";
 }
 
 bool operator==(const Character &a, const Character &b) {
@@ -51,8 +51,7 @@ std::ostream &operator<<(std::ostream &out, const Character &c) {
 				<< c.color << "\t"      //
 				<< c.age << "\t"        //
 				<< c.height << "\t"     //
-				<< c.mass << "\t"       //
-				<< c.bmi;               //
+				<< c.mass;
 
 		break;
 	case CHARACTER_STYLE_TABLE: {
@@ -129,7 +128,7 @@ std::istream &operator>>(std::istream &in, Character &c) {
 	std::getline(in, c.gender, '\t');
 	std::getline(in, c.occupation, '\t');
 	std::getline(in, c.color, '\t');
-	in >> c.age >> c.height >> c.mass >> c.bmi;
+	in >> c.age >> c.height >> c.mass;
 	//	in.ignore(256, '\n');
 	return in;
 }
@@ -157,15 +156,21 @@ void Character::setColor(const std::string &value) { color = value; }
 
 double Character::getHeight() const { return height; }
 
-void Character::setHeight(double value) { height = value; }
+void Character::setHeight(double value) {
+	height = value;
+	calcBmi();
+}
 
 double Character::getMass() const { return mass; }
 
-void Character::setMass(double value) { mass = value; }
+void Character::setMass(double value) {
+	mass = value;
+	calcBmi();
+}
 
 double Character::getBmi() const { return bmi; }
 
-void Character::setBmi(double value) { bmi = value; }
+void Character::calcBmi() { bmi = mass / (height * height); }
 
 int Character::getAge() const { return age; }
 
