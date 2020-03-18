@@ -277,6 +277,7 @@ void MainScreen::addData() {
 		Character *c = new Character;
 		in >> *c;
 
+		Character::setPrintStyle(CHARACTER_STYLE_SINGLE);
 		out << c << std::endl;
 
 		out << "Confirm? \n[Y/n]: ";
@@ -288,6 +289,8 @@ void MainScreen::addData() {
 			table->insert(c->getName(), c);
 			bst->add(c);
 			graph->addNode(c);
+			out << Color(SUCCESS) << "Character added successfully. \n"
+					<< Color(RESET);
 		} else {
 			out << "Operation cancelled\n";
 		}
